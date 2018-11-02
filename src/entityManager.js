@@ -37,12 +37,26 @@ _bShowRocks : true,
 // "PRIVATE" METHODS
 
 _generateWalls : function() {
-    var i,
-        NUM_ROCKS = 4;
 
-    for (i = 0; i < NUM_ROCKS; ++i) {
-        //this.generateRock();
+  var brick = g_brickwall.wall;
+
+  for (var i = 0; i < brick.length; i++) {
+    for (var j = 0; j < brick[i].length; j++) {
+      if ( brick[i][j] != 0) {
+
+        this.generateWall({
+          cx: j*g_brickwall.width + g_brickwall.startX,
+          cy: i*g_brickwall.height + g_brickwall.startY,
+
+          width: g_brickwall.width,
+          height: g_brickwall.height,
+
+          life: brick[i][j]
+        });
+      }
     }
+  }
+
 },
 
 
@@ -83,8 +97,8 @@ fireBullet: function(cx, cy, velX, velY, rotation) {
     }));
 },
 
-generateWalls : function(descr) {
-    //this._rocks.push(new Rock(descr));
+generateWall : function(descr) {
+    this._walls.push(new Wall(descr));
 },
 
 generateTank : function(descr) {
