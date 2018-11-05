@@ -39,7 +39,7 @@ var g_brickwall = {
         height: 30,
         width:  30,
 
-        color: ['yellow', "red",'green', 'blue', 'gray']
+       // sprites: [g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4]
 };
 
 // A generic contructor which accepts an arbitrary descriptor object
@@ -48,6 +48,7 @@ function Wall(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
+    this.sprite = [g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.box4, g_sprites.box4];
     // Default sprite and scale, if not otherwise specified
     //this.sprite = this.sprite || g_sprites.rock;
     //this.scale  = this.scale  || 1;
@@ -86,7 +87,8 @@ Rock.prototype.splitSound = new Audio(
   */
 
 Wall.prototype.takeBulletHit = function () {
-    this.kill();
+    this.life--;
+    //this.kill();
 
 };
 
@@ -99,12 +101,16 @@ Wall.prototype.render = function (ctx) {
         ctx, this.cx, this.cy, this.rotation
     );
     */
+    if(this.life >= 0 && this.life < 5){
+        this.sprite[this.life].drawCustomImgAt(
+            ctx, this.cx, this.cy, this.width, this.height
+            );
+    }
 
-    //console.log(this);
 
-    util.fillBox(ctx, this.cx, this.cy,
+    /*util.fillBox(ctx, this.cx, this.cy,
                 this.width, this.height,
-                g_brickwall.color[this.life]);
+                g_brickwall.color[this.life]);*/
 
 
 };

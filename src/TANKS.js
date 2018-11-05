@@ -179,7 +179,12 @@ function requestPreloads() {
     var requiredImages = {
         ship   : "../images/Tank1.png",
         ship2  : "../images/Tank2.png",
-        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png"
+        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png",
+        box1   : "../images/Box1.png",
+        box2   : "../images/Box2.png",
+        box3   : "../images/Box3.png",
+        box4   : "../images/Box4.png",
+        floor   : "../images/floor.jpg"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -192,6 +197,12 @@ function preloadDone() {
     g_sprites.ship  = new Sprite(g_images.ship);
     g_sprites.ship2 = new Sprite(g_images.ship2);
     g_sprites.rock  = new Sprite(g_images.rock);
+
+    g_sprites.box1  = new Sprite(g_images.box1);
+    g_sprites.box2  = new Sprite(g_images.box2);
+    g_sprites.box3  = new Sprite(g_images.box3);
+    g_sprites.box4  = new Sprite(g_images.box4);
+    g_sprites.floor  = new Sprite(g_images.floor);
 
     g_sprites.bullet = new Sprite(g_images.ship);
     g_sprites.bullet.scale = 0.25;

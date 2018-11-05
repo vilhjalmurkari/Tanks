@@ -28,6 +28,7 @@ var entityManager = {
 // "PRIVATE" DATA
 
 // What we have for now
+_floor   : [],
 _walls   : [],
 _tanks   : [],
 _bullets : [],
@@ -59,6 +60,27 @@ _generateWalls : function() {
 
 },
 
+_generateFloor : function() {
+
+    var tile = g_floor.tiles;
+  
+    for (var i = 0; i < tile.length; i++) {
+      for (var j = 0; j < tile[i].length; j++) {
+  
+          this.generateFloor({
+            cx: j*g_floor.width + g_floor.startX,
+            cy: i*g_floor.height + g_floor.startY,
+  
+            width: g_floor.width,
+            height: g_floor.height,
+
+          });
+        
+      }
+    }
+  
+  },
+
 
 
 _forEachOf: function(aCategory, fn) {
@@ -78,11 +100,12 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._walls, this._tanks, this._bullets];
+    this._categories = [this._floor, this._walls, this._tanks, this._bullets];
 },
 
 init: function() {
     this._generateWalls();
+    this._generateFloor();
     //this._generateTank();
 },
 
@@ -99,6 +122,10 @@ fireBullet: function(cx, cy, velX, velY, rotation) {
 
 generateWall : function(descr) {
     this._walls.push(new Wall(descr));
+},
+
+generateFloor : function(descr) {
+    this._floor.push(new Floor(descr));
 },
 
 generateTank : function(descr) {
