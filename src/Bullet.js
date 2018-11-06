@@ -44,6 +44,8 @@ Bullet.prototype.cy = 200;
 Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
 
+
+
 // Convert times from milliseconds to "nominal" time units.
 Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
 
@@ -99,7 +101,7 @@ Entity.prototype.boxCollition = function () {
 };
 
 Bullet.prototype.getRadius = function () {
-    return 4;
+    return 6;
 };
 
 Bullet.prototype.takeBulletHit = function () {
@@ -117,8 +119,8 @@ Bullet.prototype.render = function (ctx) {
         ctx.globalAlpha = this.lifeSpan / fadeThresh;
     }
 
-    g_sprites.bullet.drawWrappedCentredAt(
-        ctx, this.cx, this.cy, this.rotation
+    g_sprites.bullet.customDrawWrappedCentredAt(
+        ctx, this.cx, this.cy, 2*this.getRadius(), 2*this.getRadius(), this.rotation
     );
 
     ctx.globalAlpha = 1;

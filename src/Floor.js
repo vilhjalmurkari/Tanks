@@ -39,7 +39,7 @@ var g_floor = {
         height: 30,
         width:  30,
 
-        
+
 };
 
 // A generic contructor which accepts an arbitrary descriptor object

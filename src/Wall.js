@@ -65,16 +65,21 @@ function Wall(descr) {
 
 Wall.prototype = new Entity();
 
+Wall.prototype.getHeight = function () {
+    return this.height;
+};
+
+Wall.prototype.getWidth = function () {
+    return this.width;
+};
+
+
 Wall.prototype.update = function (du) {
 
     spatialManager.unregister(this);
     if (this._isDeadNow) {
       return entityManager.KILL_ME_NOW;
     }
-
-  //  this.cx += this.velX * du;
-  //  this.cy += this.velY * du;
-
 
     //this.wrapPosition();
 

@@ -99,7 +99,7 @@ Tank.prototype.update = function (du) {
     } else {
       spatialManager.register(this);
     }
-
+    
 };
 
 Tank.prototype.computeSubStep = function (du) {
@@ -148,7 +148,7 @@ Tank.prototype.maybeFireBullet = function () {
 
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
-        var launchDist = this.getRadius() * 1.2;
+        var launchDist = this.getRadius() * 1.6;
 
         var relVel = this.launchVel;
         var relVelX = dX * relVel;
