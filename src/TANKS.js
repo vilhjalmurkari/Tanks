@@ -46,14 +46,38 @@ var g_ctx = g_canvas.getContext("2d");
 // CREATE INITIAL SHIPS
 // ====================
 
-function createInitialShips() {
+function createInitialTanks() {
 
     entityManager.generateTank({
-        cx : 200,
-        cy : 200
+        cx : 270,
+        cy : 255,
+        KEY_FORWARD : 'W'.charCodeAt(0),
+        KEY_BACKWARDS  : 'S'.charCodeAt(0),
+        KEY_LEFT   : 'A'.charCodeAt(0),
+        KEY_RIGHT  : 'D'.charCodeAt(0),
+        KEY_FIRE   : ' '.charCodeAt(0),
+        sprite : g_sprites.tank1
+
+    });
+
+    entityManager.generateTank({
+        cx : 270,
+        cy : 100,
+        KEY_FORWARD : 38,
+        KEY_BACKWARDS  : 40,
+        KEY_LEFT   : 37,
+        KEY_RIGHT  : 39,
+        KEY_FIRE   : 13,
+        sprite : g_sprites.tank2
+
     });
 
 }
+Tank.prototype.KEY_FORWARD = 'W'.charCodeAt(0);
+Tank.prototype.KEY_BACKWARDS  = 'S'.charCodeAt(0);
+Tank.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
+Tank.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
+Tank.prototype.KEY_FIRE   = ' '.charCodeAt(0);
 
 // =============
 // GATHER INPUTS
@@ -177,14 +201,14 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        ship   : "../images/Tank1.png",
-        ship2  : "../images/Tank2.png",
-        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png",
+        tank1   : "../images/Tank1.png",
+        tank2  : "../images/Tank2.png",
         box1   : "../images/Box1.png",
         box2   : "../images/Box2.png",
         box3   : "../images/Box3.png",
         box4   : "../images/Box4.png",
-        floor   : "../images/floor.jpg"
+        floor   : "../images/floor.jpg",
+        bullet   : "../images/bullet.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -194,21 +218,18 @@ var g_sprites = {};
 
 function preloadDone() {
 
-    g_sprites.ship  = new Sprite(g_images.ship);
-    g_sprites.ship2 = new Sprite(g_images.ship2);
-    g_sprites.rock  = new Sprite(g_images.rock);
-
+    g_sprites.tank1  = new Sprite(g_images.tank1);
+    g_sprites.tank2 = new Sprite(g_images.tank2);
     g_sprites.box1  = new Sprite(g_images.box1);
     g_sprites.box2  = new Sprite(g_images.box2);
     g_sprites.box3  = new Sprite(g_images.box3);
     g_sprites.box4  = new Sprite(g_images.box4);
     g_sprites.floor  = new Sprite(g_images.floor);
 
-    g_sprites.bullet = new Sprite(g_images.ship);
-    g_sprites.bullet.scale = 0.25;
+    g_sprites.bullet = new Sprite(g_images.bullet);
 
     entityManager.init();
-    createInitialShips();
+    createInitialTanks();
 
     main.init();
 }

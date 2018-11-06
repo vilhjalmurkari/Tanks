@@ -59,6 +59,7 @@ unregister: function(entity) {
 
 findEntityInRange: function(posX, posY, radius) {
 
+    
     for (var ID in this._entities) {
         var e = this._entities[ID];
         var xdist = posX - e.posX;
@@ -71,6 +72,67 @@ findEntityInRange: function(posX, posY, radius) {
         }
     }
 
+},
+
+checkBoxCollision: function(posX, posY, radius) {
+    for (var ID in this._entities) {
+        if(this._entities[ID].entity.type == "Wall" && this._entities[ID].entity.life > 1){
+             //Closest point on collision box
+        var a = {
+            x: posX,
+            y: posY,
+            r: radius
+        }
+        var b = {
+            x: this._entities[ID].posX,
+            y: this._entities[ID].posY,
+            h: this._entities[ID].entity.height,
+            w: this._entities[ID].entity.width
+        }
+
+        var cX, cY;
+
+        //Find closest x offset
+        if( a.x < b.x )
+        {
+            cX = b.x;
+        }
+        else if( a.x > b.x + b.w )
+        {
+            cX = b.x + b.w;
+        }
+        else
+        {
+            cX = a.x;
+        }
+
+        //Find closest y offset
+        
+        if( a.y < b.y )
+        {
+            cY = b.y;
+        }
+        else if( a.y > b.y + b.h )
+        {
+            cY = b.y + b.h;
+        }
+        else
+        {
+            cY = a.y;
+        }
+
+        //If the closest point is inside the circle
+        if( util.distSq( a.x, a.y, cX, cY ) < a.r * a.r )
+        {
+            //This box and the circle have collided
+            return this._entities[ID].entity;
+        }
+    
+        //If the shapes have not collided
+        
+        }
+    }
+    return false;
 },
 
 render: function(ctx) {

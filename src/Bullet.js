@@ -33,7 +33,7 @@ Bullet.prototype = new Entity();
 
 // HACKED-IN AUDIO (no preloading)
 Bullet.prototype.fireSound = new Audio(
-    "../sounds/bulletFire.ogg");
+    "../sounds/bulletCannon.wav");
 Bullet.prototype.zappedSound = new Audio(
     "../sounds/bulletZapped.ogg");
     
@@ -63,7 +63,7 @@ Bullet.prototype.update = function (du) {
     this.cx += this.velX * du;
     this.cy += this.velY * du;
 
-    this.rotation += 1 * du;
+    this.rotation += 0.5 * du;
     this.rotation = util.wrapRange(this.rotation,
                                    0, consts.FULL_CIRCLE);
 
@@ -79,9 +79,23 @@ Bullet.prototype.update = function (du) {
         if (canTakeHit) canTakeHit.call(hitEntity); 
         return entityManager.KILL_ME_NOW;
     }
+
+    var hitBox = this.boxCollition();
+    if (hitBox) {
+        var canTakeHit = hitBox.takeBulletHit;
+        if (canTakeHit) canTakeHit.call(hitBox); 
+        return entityManager.KILL_ME_NOW;
+    }
     
     //reregister
     spatialManager.register(this);
+};
+
+Entity.prototype.boxCollition = function () {
+    var pos = this.getPos();
+    return spatialManager.checkBoxCollision(
+        pos.posX, pos.posY, this.getRadius()
+    );
 };
 
 Bullet.prototype.getRadius = function () {

@@ -21,7 +21,7 @@ function Tank(descr) {
     this.rememberResets();
 
     // Default sprite, if not otherwise specified
-    this.sprite = this.sprite || g_sprites.ship;
+    this.sprite = this.sprite || g_sprites.tank1;
 
     // Set normal drawing scale, and warp state off
     this._scale = 1;
@@ -37,12 +37,6 @@ Tank.prototype.rememberResets = function () {
     this.reset_rotation = this.rotation;
 };
 
-Tank.prototype.KEY_FORWARD = 'W'.charCodeAt(0);
-Tank.prototype.KEY_BACKWARDS  = 'S'.charCodeAt(0);
-Tank.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
-Tank.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
-
-Tank.prototype.KEY_FIRE   = ' '.charCodeAt(0);
 
 // Initial, inheritable, default values
 Tank.prototype.rotation = 0;
@@ -53,6 +47,10 @@ Tank.prototype.velY = 0;
 Tank.prototype.launchVel = 2;
 Tank.prototype.numSubSteps = 1;
 Tank.prototype.stepsize = 3;
+Tank.prototype.width = 30;
+Tank.prototype.height = 30;
+Tank.prototype.currentHP = 100;
+Tank.prototype.fullHP = 100;
 
 // HACKED-IN AUDIO (no preloading)
 /*
@@ -118,14 +116,30 @@ Tank.prototype.computeSubStep = function (du) {
 Tank.prototype.moveTank = function (du) {
 
     if (keys[this.KEY_FORWARD]) {
-        this.cx += +Math.sin(this.rotation) * this.stepsize * du;
-        this.cy += -Math.cos(this.rotation) * this.stepsize * du;
+        var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
+        var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
+        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius)){
+            this.cx += +Math.sin(this.rotation) * this.stepsize * du;
+            this.cy += -Math.cos(this.rotation) * this.stepsize * du;
+        }
     }
     if (keys[this.KEY_BACKWARDS]) {
-        this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
-        this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
+        var deltaX = +Math.sin(this.rotation) * -this.stepsize * du;
+        var deltaY = -Math.cos(this.rotation) * -this.stepsize * du;
+        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius)){
+            this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
+            this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
+        }
     }
 
+};
+
+Tank.prototype.canMove = function (x, y, rad) {
+    var canIt = spatialManager.checkBoxCollision(
+        x, y, this.getRadius()
+    );
+    
+    return !canIt;
 };
 
 Tank.prototype.maybeFireBullet = function () {
@@ -150,11 +164,11 @@ Tank.prototype.maybeFireBullet = function () {
 };
 
 Tank.prototype.getRadius = function () {
-    return (this.sprite.width / 2) * 0.9;
+    return (this.width / 2) * 0.9;
 };
 
 Tank.prototype.takeBulletHit = function () {
-    //this.warp();
+    this.currentHP -= 10;
 };
 
 Tank.prototype.reset = function () {
@@ -169,7 +183,7 @@ Tank.prototype.halt = function () {
     this.velY = 0;
 };
 
-var NOMINAL_ROTATE_RATE = 0.05;
+var NOMINAL_ROTATE_RATE = 0.08;
 
 Tank.prototype.updateRotation = function (du) {
     if (keys[this.KEY_LEFT]) {
@@ -181,11 +195,24 @@ Tank.prototype.updateRotation = function (du) {
 };
 
 Tank.prototype.render = function (ctx) {
+    
     var origScale = this.sprite.scale;
     // pass my scale into the sprite, for drawing
     this.sprite.scale = this._scale;
-    this.sprite.drawWrappedCentredAt(
-	ctx, this.cx, this.cy, this.rotation
+    this.sprite.customDrawWrappedCentredAt(
+	ctx, this.cx, this.cy, this.width, this.height, this.rotation
     );
     this.sprite.scale = origScale;
+
+    //hp bar
+    var barHeight = 5;
+    var barWidth = this.width;
+    util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
+        barWidth, barHeight,
+        "Red");
+    if(this.currentHP > 0){
+        util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
+        barWidth * (this.currentHP/this.fullHP), barHeight,
+        "Green");
+    }
 };
