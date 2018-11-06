@@ -81,21 +81,14 @@ Wall.prototype.update = function (du) {
       return entityManager.KILL_ME_NOW;
     }
 
-    //this.wrapPosition();
-
-    spatialManager.register(this);
+    if (this.life > 1) {
+      spatialManager.register(this);
+    }
 
 };
 
-// HACKED-IN AUDIO (no preloading)
-/*
-Rock.prototype.splitSound = new Audio(
-  "sounds/rockSplit.ogg");
-  */
-
 Wall.prototype.takeBulletHit = function () {
     this.life--;
-
 };
 
 Wall.prototype.render = function (ctx) {
@@ -112,11 +105,5 @@ Wall.prototype.render = function (ctx) {
             ctx, this.cx, this.cy, this.width, this.height
             );
     }
-
-
-    /*util.fillBox(ctx, this.cx, this.cy,
-                this.width, this.height,
-                g_brickwall.color[this.life]);*/
-
 
 };

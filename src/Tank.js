@@ -99,7 +99,7 @@ Tank.prototype.update = function (du) {
     } else {
       spatialManager.register(this);
     }
-    
+
 };
 
 Tank.prototype.computeSubStep = function (du) {
@@ -138,7 +138,7 @@ Tank.prototype.canMove = function (x, y, rad) {
     var canIt = spatialManager.checkBoxCollision(
         x, y, this.getRadius()
     );
-    
+
     return !canIt;
 };
 
@@ -169,6 +169,10 @@ Tank.prototype.getRadius = function () {
 
 Tank.prototype.takeBulletHit = function () {
     this.currentHP -= 10;
+    if (this.currentHP <= 0) {
+      this._isDeadNow = true;
+    }
+
 };
 
 Tank.prototype.reset = function () {
@@ -195,7 +199,7 @@ Tank.prototype.updateRotation = function (du) {
 };
 
 Tank.prototype.render = function (ctx) {
-    
+
     var origScale = this.sprite.scale;
     // pass my scale into the sprite, for drawing
     this.sprite.scale = this._scale;
