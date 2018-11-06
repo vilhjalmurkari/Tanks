@@ -63,22 +63,22 @@ _generateWalls : function() {
 _generateFloor : function() {
 
     var tile = g_floor.tiles;
-  
+
     for (var i = 0; i < tile.length; i++) {
       for (var j = 0; j < tile[i].length; j++) {
-  
+
           this.generateFloor({
             cx: j*g_floor.width + g_floor.startX,
             cy: i*g_floor.height + g_floor.startY,
-  
+
             width: g_floor.width,
             height: g_floor.height,
 
           });
-        
+
       }
     }
-  
+
   },
 
 
@@ -118,6 +118,9 @@ fireBullet: function(cx, cy, velX, velY, rotation) {
 
         rotation : rotation
     }));
+
+    console.log(this._categories);
+    console.log(spatialManager._entities);
 },
 
 generateWall : function(descr) {

@@ -41,12 +41,25 @@ register: function(entity) {
 
     var radius = entity.getRadius();
 
+    if (isNaN(radius) || radius == 0) {
+      var height = entity.getHeight();
+      var width = entity.getWidth();
+
+      this._entities[spatialID] = {entity,
+                                   posX: pos.posX,
+                                   posY: pos.posY,
+                                   height: height,
+                                   width: width
+                                 };
+      return;
+    }
 
     this._entities[spatialID] = {entity,
                                  posX: pos.posX,
                                  posY: pos.posY,
                                  radius: radius
                                };
+
 
 },
 
@@ -78,8 +91,14 @@ render: function(ctx) {
     ctx.strokeStyle = "red";
 
     for (var ID in this._entities) {
-        var e = this._entities[ID];
+      var e = this._entities[ID];
+
+      if (isNaN(e.radius)) {
+        util.box(ctx, e.posX, e.posY, e.width, e.height);
+
+      } else {
         util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+      }
     }
     ctx.strokeStyle = oldStyle;
 }

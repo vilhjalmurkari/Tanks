@@ -101,7 +101,7 @@ Tank.prototype.update = function (du) {
     } else {
       spatialManager.register(this);
     }
-
+    
 };
 
 Tank.prototype.computeSubStep = function (du) {
