@@ -93,14 +93,16 @@ Tank.prototype.update = function (du) {
 
     // Handle firing
     this.maybeFireBullet();
-
+/*
     var hitEntity = this.findHitEntity();
     if (hitEntity) {
         this.warp();
     } else {
       spatialManager.register(this);
     }
+*/
 
+    spatialManager.register(this);
 };
 
 Tank.prototype.computeSubStep = function (du) {
@@ -171,7 +173,7 @@ Tank.prototype.takeBulletHit = function () {
     this.currentHP -= 10;
     if (this.currentHP <= 0) {
       this._isDeadNow = true;
-      
+
       entityManager.makeExplosion(
         this.cx, this.cy, 20);
     }

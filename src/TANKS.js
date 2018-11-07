@@ -73,6 +73,7 @@ function createInitialTanks() {
     });
 
 }
+
 Tank.prototype.KEY_FORWARD = 'W'.charCodeAt(0);
 Tank.prototype.KEY_BACKWARDS  = 'S'.charCodeAt(0);
 Tank.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
