@@ -16,19 +16,19 @@ var g_brickwall = {
   wall:[ [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,4,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+        [3,3,3,3,3,3,4,3,0,0,3,5,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+        [3,3,3,3,4,3,3,3,0,0,3,3,3,5,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+        [3,3,3,3,5,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+        [3,3,3,3,5,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
@@ -47,10 +47,11 @@ function Wall(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
-    this.sprite = [g_sprites.box4, g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.box4, g_sprites.box4];
+    this.sprite = [g_sprites.box4, g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.barrel];
     this.type = "Wall";
     this.height = 30;
     this.width = 30;
+    this.radius = this.height/2;
     // Default sprite and scale, if not otherwise specified
     //this.sprite = this.sprite || g_sprites.rock;
     //this.scale  = this.scale  || 1;
@@ -64,6 +65,12 @@ function Wall(descr) {
 };
 
 Wall.prototype = new Entity();
+
+Wall.prototype.woodBreaking = new Audio(
+    "../sounds/woodBreaking.wav");
+
+Wall.prototype.thump = new Audio(
+    "../sounds/thump.wav");
 
 Wall.prototype.getHeight = function () {
     return this.height;
@@ -85,10 +92,25 @@ Wall.prototype.update = function (du) {
       spatialManager.register(this);
     }
 
+    if(this.life == 0){
+        this._isDeadNow = true;
+    }
 };
 
 Wall.prototype.takeBulletHit = function () {
-    this.life--;
+    if(this.life > 0 && this.life < 4){
+        this.life--;
+        this.woodBreaking.play();
+    }
+    if(this.life === 5){
+        entityManager.makeExplosion(
+            this.cx + (this.width/2), this.cy + (this.height/2), 40);
+        this.life = 0;
+        this._isDeadNow = true;
+    }
+    if(this.life === 4){
+        this.thump.play();
+    }
 };
 
 Wall.prototype.render = function (ctx) {
@@ -100,7 +122,7 @@ Wall.prototype.render = function (ctx) {
         ctx, this.cx, this.cy, this.rotation
     );
     */
-    if(this.life > 0 && this.life < 5){
+    if(this.life > 0){
         this.sprite[this.life].drawCustomImgAt(
             ctx, this.cx, this.cy, this.width, this.height
             );

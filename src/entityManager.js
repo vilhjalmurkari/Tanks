@@ -32,6 +32,7 @@ _floor   : [],
 _walls   : [],
 _tanks   : [],
 _bullets : [],
+_explosions : [],
 
 _bShowRocks : true,
 
@@ -100,7 +101,7 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._floor, this._walls, this._tanks, this._bullets];
+    this._categories = [this._floor, this._walls, this._tanks, this._bullets, this._explosions];
 },
 
 init: function() {
@@ -117,6 +118,16 @@ fireBullet: function(cx, cy, velX, velY, rotation) {
         velY : velY,
 
         rotation : rotation
+    }));
+},
+
+makeExplosion: function(cx, cy, radius) {
+    this._explosions.push(new Explosion({
+        cx   : cx,
+        cy   : cy,
+        width : radius*2,
+        height : radius*2,
+        radius : radius,
     }));
 },
 

@@ -208,7 +208,9 @@ function requestPreloads() {
         box3   : "../images/Box3.png",
         box4   : "../images/Box4.png",
         floor   : "../images/floor.jpg",
-        bullet   : "../images/bullet.png"
+        bullet   : "../images/bullet.png",
+        explosion   : "../images/explosion.png",
+        barrel   : "../images/Barrel.png",
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -227,6 +229,8 @@ function preloadDone() {
     g_sprites.floor  = new Sprite(g_images.floor);
 
     g_sprites.bullet = new Sprite(g_images.bullet);
+    g_sprites.explosion = new Sprite(g_images.explosion);
+    g_sprites.barrel = new Sprite(g_images.barrel);
 
     entityManager.init();
     createInitialTanks();

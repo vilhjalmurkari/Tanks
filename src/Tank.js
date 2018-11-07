@@ -51,6 +51,7 @@ Tank.prototype.width = 30;
 Tank.prototype.height = 30;
 Tank.prototype.currentHP = 100;
 Tank.prototype.fullHP = 100;
+Tank.prototype.radius = this.width/2;
 
 // HACKED-IN AUDIO (no preloading)
 /*
@@ -158,7 +159,6 @@ Tank.prototype.maybeFireBullet = function () {
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            this.velX + relVelX, this.velY + relVelY,
            this.rotation);
-
     }
 
 };
@@ -171,6 +171,9 @@ Tank.prototype.takeBulletHit = function () {
     this.currentHP -= 10;
     if (this.currentHP <= 0) {
       this._isDeadNow = true;
+      
+      entityManager.makeExplosion(
+        this.cx, this.cy, 20);
     }
 
 };
