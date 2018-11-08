@@ -185,11 +185,9 @@ Tank.prototype.takeBulletHit = function () {
         }
         else this._isDeadNow = true;
     }
-
-
-
-
+    
 };
+
 /* Tank respawns at a mostly random location. Distance between old and new
 location must be at least respawnMinDist on both the x- and the y-axis.*/
 Tank.prototype.respawn = function () {
