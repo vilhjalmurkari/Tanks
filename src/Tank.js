@@ -52,6 +52,8 @@ Tank.prototype.height = 30;
 Tank.prototype.currentHP = 100;
 Tank.prototype.fullHP = 100;
 Tank.prototype.radius = this.width/2;
+Tank.prototype.lives = 3;
+Tank.prototype.respawnMinDist = 200;
 
 // HACKED-IN AUDIO (no preloading)
 /*
@@ -172,13 +174,44 @@ Tank.prototype.getRadius = function () {
 Tank.prototype.takeBulletHit = function () {
     this.currentHP -= 10;
     if (this.currentHP <= 0) {
-      this._isDeadNow = true;
+        this.lives--;
 
-      entityManager.makeExplosion(
-        this.cx, this.cy, 20);
+        entityManager.makeExplosion(
+          this.cx, this.cy, 20);
+
+        if (this.lives > 0) {
+          this.currentHP = this.fullHP;
+          this.respawn()
+        }
+        else this._isDeadNow = true;
     }
 
+
+
+
 };
+/* Tank respawns at a mostly random location. Distance between old and new
+location must be at least respawnMinDist on both the x- and the y-axis.*/
+Tank.prototype.respawn = function () {
+    //Available space on the x-axis
+    var availableX = g_canvas.width - this.respawnMinDist*2;
+    //Available space on the y-axis
+    var availableY = g_canvas.height - this.respawnMinDist*2;
+    var distCX = this.cx + this.respawnMinDist;
+    var distCY = this.cy + this.respawnMinDist;
+
+    this.cx = util.randRange(distCX, distCX + availableX);
+    this.cy = util.randRange(distCY, distCY + availableY);
+    this.wrapPosition();
+
+    //Adjust new position if the tank lands on a box
+    while (!this.canMove(this.cx, this.cy, this.radius)) {
+      this.cx += 30;
+      this.cy +=30;
+      this.wrapPosition();
+    }
+
+}
 
 Tank.prototype.reset = function () {
     this.setPos(this.reset_cx, this.reset_cy);
