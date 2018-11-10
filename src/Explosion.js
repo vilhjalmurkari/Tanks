@@ -59,11 +59,10 @@ Explosion.prototype.update = function (du) {
     //
     if(this.lifeSpan === 23){
         var hitEntities = this.findAllHitEntities();
-        //console.log(hitEntities);
         
         if (hitEntities) {
             for(var i = 0; i < hitEntities.length; i++){
-                var canTakeHit = hitEntities[i].takeBulletHit;
+                var canTakeHit = hitEntities[i].takeExplosionHit;
                 if (canTakeHit) canTakeHit.call(hitEntities[i]); 
             } 
         }

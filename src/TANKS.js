@@ -69,7 +69,6 @@ function createInitialTanks() {
         KEY_RIGHT  : 39,
         KEY_FIRE   : 13,
         sprite : g_sprites.tank2
-
     });
 
 }
@@ -212,6 +211,7 @@ function requestPreloads() {
         bullet   : "../images/bullet.png",
         explosion   : "../images/explosion.png",
         barrel   : "../images/Barrel.png",
+        turret   : "../images/turret.png",
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -232,6 +232,8 @@ function preloadDone() {
     g_sprites.bullet = new Sprite(g_images.bullet);
     g_sprites.explosion = new Sprite(g_images.explosion);
     g_sprites.barrel = new Sprite(g_images.barrel);
+    g_sprites.turret = new Sprite(g_images.turret);
+
 
     entityManager.init();
     createInitialTanks();

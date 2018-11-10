@@ -40,12 +40,16 @@ _bShowRocks : true,
 
 _generateWalls : function() {
 
-  var brick = g_brickwall.wall;
+  var brick = g_brickwall.wall2;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
       if ( brick[i][j] != 0) {
-
+        var wallType = brick[i][j];
+        //use 9 to represent random wall
+        if(wallType == 9){
+            wallType = Math.floor(Math.random()*6)
+        }
         this.generateWall({
           cx: j*g_brickwall.width + g_brickwall.startX,
           cy: i*g_brickwall.height + g_brickwall.startY,
@@ -53,7 +57,7 @@ _generateWalls : function() {
           width: g_brickwall.width,
           height: g_brickwall.height,
 
-          life: brick[i][j]
+          life: wallType
         });
       }
     }

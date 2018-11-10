@@ -12,8 +12,9 @@
 */
 
 var g_brickwall = {
-
-  wall:[ [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
+//Easy to switch levels in generateWalls in entityManager
+    wall:[ 
+        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,4,3,3,3,3],
@@ -32,12 +33,36 @@ var g_brickwall = {
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
-        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3], ],
+        [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3], 
+    ],
+    //using 9 to represent a random wall
+    wall2:[ 
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,6,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,6,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,6,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,6,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+    ],
 
-        startX: 0,
-        startY: 0,
-        height: 30,
-        width:  30,
+    startX: 0,
+    startY: 0,
+    height: 30,
+    width:  30,
        // sprites: [g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4]
 };
 
@@ -47,20 +72,12 @@ function Wall(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
-    this.sprite = [g_sprites.box4, g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.barrel];
+    this.sprite = [g_sprites.box1, g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.barrel, g_sprites.turret];
     this.type = "Wall";
     this.height = 30;
     this.width = 30;
     this.radius = this.height/2;
-    // Default sprite and scale, if not otherwise specified
-    //this.sprite = this.sprite || g_sprites.rock;
-    //this.scale  = this.scale  || 1;
-
-/*
-    // Diagnostics to check inheritance stuff
-    this._rockProperty = true;
-    console.dir(this);
-*/
+    this.turretfire = 100;
 
 };
 
@@ -95,6 +112,14 @@ Wall.prototype.update = function (du) {
     if(this.life == 0){
         this._isDeadNow = true;
     }
+
+    if(this.life === 6){    
+        if(this.turretfire == 0){
+            this.fireTurret();
+            this.turretfire = 100;
+        }  
+        this.turretfire--;
+    }
 };
 
 Wall.prototype.takeBulletHit = function () {
@@ -108,24 +133,58 @@ Wall.prototype.takeBulletHit = function () {
         this.life = 0;
         this._isDeadNow = true;
     }
-    if(this.life === 4){
+    if(this.life === 4 && this.life === 6){
+        this.thump.play();
+    }
+};
+
+Wall.prototype.takeExplosionHit = function () {
+    if(this.life > 0 && this.life < 4){
+        this.life--;
+        this.woodBreaking.play();
+    }
+    if(this.life === 5){
+        entityManager.makeExplosion(
+            this.cx + (this.width/2), this.cy + (this.height/2), 40);
+        this.life = 0;
+        this._isDeadNow = true;
+    }
+    if(this.life === 4 && this.life === 6){
         this.thump.play();
     }
 };
 
 Wall.prototype.render = function (ctx) {
-  /*
-    var origScale = this.sprite.scale;
-    // pass my scale into the sprite, for drawing
-    this.sprite.scale = this.scale;
-    this.sprite.drawWrappedCentredAt(
-        ctx, this.cx, this.cy, this.rotation
-    );
-    */
+
     if(this.life > 0){
         this.sprite[this.life].drawCustomImgAt(
             ctx, this.cx, this.cy, this.width, this.height
             );
     }
-
 };
+
+Wall.prototype.fireTurret = function() {
+    var launchDist = 25;
+    var xCenter = this.cx + this.width/2;
+    var yCenter = this.cy + this.height/2;
+    entityManager.fireBullet(
+        xCenter + launchDist, yCenter,
+        2, 0,
+        0);
+
+    entityManager.fireBullet(
+        xCenter - launchDist, yCenter,
+        -2, 0,
+        0);
+
+    entityManager.fireBullet(
+        xCenter, yCenter + launchDist,
+        0, 2,
+        0);
+
+    entityManager.fireBullet(
+        xCenter, yCenter - launchDist,
+        0, -2,
+        0);
+    
+}

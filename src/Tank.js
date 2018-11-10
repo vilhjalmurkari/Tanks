@@ -54,6 +54,7 @@ Tank.prototype.fullHP = 100;
 Tank.prototype.radius = this.width/2;
 Tank.prototype.lives = 3;
 Tank.prototype.respawnMinDist = 200;
+Tank.prototype.shootingBumper = 0;
 
 // HACKED-IN AUDIO (no preloading)
 /*
@@ -148,8 +149,8 @@ Tank.prototype.canMove = function (x, y, rad) {
 };
 
 Tank.prototype.maybeFireBullet = function () {
-
-    if (keys[this.KEY_FIRE]) {
+    
+    if (eatKey(this.KEY_FIRE)) {
 
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
@@ -173,6 +174,23 @@ Tank.prototype.getRadius = function () {
 
 Tank.prototype.takeBulletHit = function () {
     this.currentHP -= 10;
+    if (this.currentHP <= 0) {
+        this.lives--;
+
+        entityManager.makeExplosion(
+          this.cx, this.cy, 20);
+
+        if (this.lives > 0) {
+          this.currentHP = this.fullHP;
+          this.respawn()
+        }
+        else this._isDeadNow = true;
+    }
+    
+};
+
+Tank.prototype.takeExplosionHit = function () {
+    this.currentHP -= 30;
     if (this.currentHP <= 0) {
         this.lives--;
 

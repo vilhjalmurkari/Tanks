@@ -74,6 +74,10 @@ Entity.prototype.findHitEntity = function () {
     );
 };
 
+Entity.prototype.takeExplosionHit = function () {
+
+};
+
 // This is just little "convenience wrapper"
 Entity.prototype.isColliding = function () {
     return this.findHitEntity();

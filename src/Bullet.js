@@ -111,6 +111,10 @@ Bullet.prototype.takeBulletHit = function () {
     this.zappedSound.play();
 };
 
+Bullet.prototype.takeExplosionHit = function () {
+
+};
+
 Bullet.prototype.render = function (ctx) {
 
     var fadeThresh = Bullet.prototype.lifeSpan / 3;
