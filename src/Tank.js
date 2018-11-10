@@ -184,9 +184,12 @@ Tank.prototype.takeBulletHit = function () {
           this.currentHP = this.fullHP;
           this.respawn()
         }
-        else this._isDeadNow = true;
+        else {
+          this._isDeadNow = true;
+          gameOver(this.player);
+      }
     }
-    
+
 };
 
 Tank.prototype.takeExplosionHit = function () {
