@@ -183,9 +183,12 @@ Tank.prototype.takeBulletHit = function () {
           this.currentHP = this.fullHP;
           this.respawn()
         }
-        else this._isDeadNow = true;
+        else {
+          this._isDeadNow = true;
+          gameOver(this.player);
+      }
     }
-    
+
 };
 
 /* Tank respawns at a mostly random location. Distance between old and new

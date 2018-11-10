@@ -56,8 +56,8 @@ function createInitialTanks() {
         KEY_LEFT   : 'A'.charCodeAt(0),
         KEY_RIGHT  : 'D'.charCodeAt(0),
         KEY_FIRE   : ' '.charCodeAt(0),
-        sprite : g_sprites.tank1
-
+        sprite : g_sprites.tank1,
+        player : 1
     });
 
     entityManager.generateTank({
@@ -68,8 +68,8 @@ function createInitialTanks() {
         KEY_LEFT   : 37,
         KEY_RIGHT  : 39,
         KEY_FIRE   : 13,
-        sprite : g_sprites.tank2
-
+        sprite : g_sprites.tank2,
+        player : 2
     });
 
 }
@@ -108,10 +108,21 @@ function updateSimulation(du) {
 
     processDiagnostics();
 
+    if(!isGameOver)
     entityManager.update(du);
+
+    else screen.update(du);
 
     // Prevent perpetual firing!
     eatKey(Tank.prototype.KEY_FIRE);
+}
+
+var screen;
+var isGameOver = false;
+
+function gameOver (loser) {
+    screen = new GameOverScr({loser: loser});
+    isGameOver = true;
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -190,6 +201,8 @@ function renderSimulation(ctx) {
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
+
+    if (isGameOver) screen.render(ctx);
 }
 
 
@@ -212,6 +225,8 @@ function requestPreloads() {
         bullet   : "../images/bullet.png",
         explosion   : "../images/explosion.png",
         barrel   : "../images/Barrel.png",
+        gameOverIMG : "../images/gameOver.png",
+        redX     :  "../images/redX.png",
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -232,6 +247,8 @@ function preloadDone() {
     g_sprites.bullet = new Sprite(g_images.bullet);
     g_sprites.explosion = new Sprite(g_images.explosion);
     g_sprites.barrel = new Sprite(g_images.barrel);
+    g_sprites.gameOverIMG = new Sprite(g_images.gameOverIMG);
+    g_sprites.redX = new Sprite(g_images.redX);
 
     entityManager.init();
     createInitialTanks();
