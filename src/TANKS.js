@@ -89,7 +89,6 @@ function gatherInputs() {
     // The event handlers do everything we need for now.
 }
 
-
 // =================
 // UPDATE SIMULATION
 // =================
@@ -128,58 +127,21 @@ function gameOver (loser) {
 // GAME-SPECIFIC DIAGNOSTICS
 
 var g_allowMixedActions = true;
-var g_useGravity = false;
-var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
 var KEY_MIXED   = keyCode('M');;
-var KEY_GRAVITY = keyCode('G');
-var KEY_AVE_VEL = keyCode('V');
 var KEY_SPATIAL = keyCode('X');
 
-var KEY_HALT  = keyCode('H');
-var KEY_RESET = keyCode('R');
-
-var KEY_0 = keyCode('0');
-
-var KEY_1 = keyCode('1');
-var KEY_2 = keyCode('2');
-
-var KEY_K = keyCode('K');
-
 function processDiagnostics() {
+      if (eatKey(KEY_MIXED))
+      g_allowMixedActions = !g_allowMixedActions;
 
-    if (eatKey(KEY_MIXED))
-        g_allowMixedActions = !g_allowMixedActions;
+      if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
-    if (eatKey(KEY_GRAVITY)) g_useGravity = !g_useGravity;
-
-    if (eatKey(KEY_AVE_VEL)) g_useAveVel = !g_useAveVel;
-
-    if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
-
-    if (eatKey(KEY_HALT)) entityManager.haltShips();
-
-    if (eatKey(KEY_RESET)) entityManager.resetShips();
-
-    if (eatKey(KEY_0)) entityManager.toggleRocks();
-
-    if (eatKey(KEY_1)) entityManager.generateShip({
-        cx : g_mouseX,
-        cy : g_mouseY,
-
-        sprite : g_sprites.ship});
-
-    if (eatKey(KEY_2)) entityManager.generateShip({
-        cx : g_mouseX,
-        cy : g_mouseY,
-
-        sprite : g_sprites.ship2
-        });
-
-    if (eatKey(KEY_K)) entityManager.killNearestShip(
-        g_mouseX, g_mouseY);
 }
+
+
+
 
 
 // =================
@@ -198,9 +160,15 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    entityManager.render(ctx);
+    if (g_menuScreenOn) {
 
-    if (g_renderSpatialDebug) spatialManager.render(ctx);
+      entityManager.render(ctx);
+      if (g_renderSpatialDebug) spatialManager.render(ctx);
+
+    } else {
+      menu.firstScreen(ctx);
+    }
+
 
     if (isGameOver) screen.render(ctx);
 }
@@ -228,6 +196,14 @@ function requestPreloads() {
         turret   : "../images/turret.png",
         gameOverIMG : "../images/gameOver.png",
         redX : "../images/redX.png",
+        player1: "../images/button_1player.png",
+        player1hover: "../images/button_1playerhover.png",
+        player2: "../images/button_2player.png",
+        player2hover: "../images/button_2playerhover.png",
+        howToPlay: "../images/button_how-to-play.png",
+        howToPlayhover: "../images/button_how-to-playhover.png",
+        menuScr: "../images/MenuScreen.png"
+
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -236,6 +212,8 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
+
+    console.log(g_images);
 
     g_sprites.tank1  = new Sprite(g_images.tank1);
     g_sprites.tank2 = new Sprite(g_images.tank2);
@@ -251,6 +229,13 @@ function preloadDone() {
     g_sprites.turret = new Sprite(g_images.turret);
     g_sprites.gameOverIMG = new Sprite(g_images.gameOverIMG);
     g_sprites.redX = new Sprite(g_images.redX);
+    g_sprites.btnPlayer1 = new Sprite(g_images.player1);
+    g_sprites.btnPlayer1hover = new Sprite(g_images.player1hover);
+    g_sprites.btnPlayer2 = new Sprite(g_images.player2);
+    g_sprites.btnPlayer2hover = new Sprite(g_images.player2hover);
+    g_sprites.btnHTP = new Sprite(g_images.howToPlay);
+    g_sprites.btnHTPhover = new Sprite(g_images.howToPlayhover);
+    g_sprites.menuScr = new Sprite(g_images.menuScr);
 
     entityManager.init();
     createInitialTanks();

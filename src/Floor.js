@@ -58,14 +58,10 @@ Floor.prototype.update = function (du) {
 
 };
 
-
 Floor.prototype.render = function (ctx) {
 
     this.sprite.drawCustomImgAt(
         ctx, this.cx, this.cy, this.width, this.height
         );
-
-
-
 
 };

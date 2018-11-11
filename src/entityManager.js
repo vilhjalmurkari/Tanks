@@ -40,7 +40,7 @@ _bShowRocks : true,
 
 _generateWalls : function() {
 
-  var brick = g_brickwall.wall2;
+  var brick = g_brickwall.wall;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
@@ -109,6 +109,7 @@ deferredSetup : function () {
 },
 
 init: function() {
+    console.log(23);
     this._generateWalls();
     this._generateFloor();
     //this._generateTank();

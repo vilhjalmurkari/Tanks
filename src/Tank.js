@@ -149,7 +149,7 @@ Tank.prototype.canMove = function (x, y, rad) {
 };
 
 Tank.prototype.maybeFireBullet = function () {
-    
+
     if (eatKey(this.KEY_FIRE)) {
 
         var dX = +Math.sin(this.rotation);
@@ -206,7 +206,7 @@ Tank.prototype.takeExplosionHit = function () {
         }
         else this._isDeadNow = true;
     }
-    
+
 };
 
 /* Tank respawns at a mostly random location. Distance between old and new
