@@ -160,13 +160,13 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    if (g_menuScreenOn) {
+    if (g_menuScreenOn ||true) {
 
       entityManager.render(ctx);
       if (g_renderSpatialDebug) spatialManager.render(ctx);
 
     } else {
-      menu.firstScreen(ctx);
+      menu.screen(ctx);
     }
 
 
@@ -202,7 +202,8 @@ function requestPreloads() {
         player2hover: "../images/button_2playerhover.png",
         howToPlay: "../images/button_how-to-play.png",
         howToPlayhover: "../images/button_how-to-playhover.png",
-        menuScr: "../images/MenuScreen.png"
+        menuScr: "../images/MenuScreen.png",
+        map: "../images/map.png"
 
     };
 
@@ -212,8 +213,6 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
-
-    console.log(g_images);
 
     g_sprites.tank1  = new Sprite(g_images.tank1);
     g_sprites.tank2 = new Sprite(g_images.tank2);
@@ -236,6 +235,7 @@ function preloadDone() {
     g_sprites.btnHTP = new Sprite(g_images.howToPlay);
     g_sprites.btnHTPhover = new Sprite(g_images.howToPlayhover);
     g_sprites.menuScr = new Sprite(g_images.menuScr);
+    g_sprites.map = new Sprite(g_images.map);
 
     entityManager.init();
     createInitialTanks();

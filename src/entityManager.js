@@ -109,7 +109,6 @@ deferredSetup : function () {
 },
 
 init: function() {
-    console.log(23);
     this._generateWalls();
     this._generateFloor();
     //this._generateTank();
