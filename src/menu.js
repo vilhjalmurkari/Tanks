@@ -6,12 +6,13 @@ var g_menuScreenOn = false;
 var hover1player = false;
 var hover2player = false;
 var hoverHTP = false;
+var hoverGoBack = false;
 
 var twoPlayers = false;
 
 var mainScreen = true;
 var mapScreen = false;
-var htpScreen = false
+var htpScreen = false;
 
 var menu = {
 
@@ -22,15 +23,18 @@ var menu = {
     var btn1Y = 240;
     var btn2Y = 300;
     var btn3Y = 360;
+    var btnGBY = 500;
 
     menu.drawCustomImgAt(ctx, 0, 0, menu.width, menu.height);
 
     if (mainScreen) drawMainScreen(ctx, btn1Y, btn2Y, btn3Y);
-    if (mapScreen) drawMapScreen(ctx);
+    if (mapScreen) drawMapScreen(ctx,btnGBY);
+    if (htpScreen) drawHTPScreen(ctx,btnGBY);
 
 
-    checkMouseHover(g_mouseX, g_mouseY, btn1Y, btn2Y, btn3Y);
-    checkMouseClick(g_mouseXClick, g_mouseYClick, btn1Y, btn2Y, btn3Y);
+
+    checkMouseHover(g_mouseX, g_mouseY, btn1Y, btn2Y, btn3Y, btnGBY);
+    checkMouseClick(g_mouseXClick, g_mouseYClick, btn1Y, btn2Y, btn3Y, btnGBY);
   }
 
 }
@@ -60,17 +64,39 @@ function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
 
 }
 
-function drawMapScreen(ctx) {
+function drawMapScreen(ctx, btnGBY) {
   var map = g_sprites.map;
+
+  ctx.font="40px Arial";
+
+  ctx.fillText("Select a map",200,75);
+
 
   map.drawCustomImgAt(ctx, 150, 150, map.width, map.height);
   map.drawCustomImgAt(ctx, 350, 150, map.width, map.height);
   map.drawCustomImgAt(ctx, 150, 350, map.width, map.height);
   map.drawCustomImgAt(ctx, 350, 350, map.width, map.height);
 
+  drawGBbutton(ctx, btnGBY);
+
 }
 
-function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y) {
+function drawHTPScreen(ctx, btnGBY) {
+
+  drawGBbutton(ctx, btnGBY);
+}
+
+function drawGBbutton(ctx, btnGBY) {
+  var goBack =  g_sprites.goBack;
+  var goBackhover = g_sprites.goBackhover;
+
+  if (hoverGoBack)
+    goBackhover.drawCustomImgAt(ctx, 50, btnGBY, goBackhover.width, goBackhover.height);
+  else
+    goBack.drawCustomImgAt(ctx, 50, btnGBY, goBack.width, goBack.height);
+}
+
+function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
   var w = g_sprites.btnHTP.width/2;
   var h = g_sprites.btnHTP.height/2;
 
@@ -88,14 +114,24 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y) {
     }
   }
 
+  // checks on the go back button
+  if ( (mapScreen || htpScreen) && (btnGBY < y && y < btnGBY + h*2)) {
+    if ( 130 - w < x && x < 130 + w) {
+      mapScreen = false;
+      mainScreen = true;
+      htpScreen = false;
+    }
+  }
+
   g_mouseXClick = 0;
   g_mouseYClick = 0;
 }
 
-function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y) {
+function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
   var w = g_sprites.btnHTP.width/2;
   var h = g_sprites.btnHTP.height/2;
 
+  // check if you are inside one of the three button on front page
   if ( g_canvas.width/2 - w < x && x < g_canvas.width/2 + w ) {
     if ( btn1Y < y && y < btn1Y + h*2 ) {
       hover1player = true;
@@ -113,8 +149,17 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y) {
     }
   }
 
+  // checks if we hover over go back button
+  if ((mapScreen || htpScreen) && (btnGBY < y && y < btnGBY + h*2)) {
+    if ( 130 - w < x && x < 130 + w) {
+      hoverGoBack = true;
+      return;
+    }
+  }
+
+
   hover1player = false;
   hover2player = false;
   hoverHTP = false;
-
+  hoverGoBack = false;
 }

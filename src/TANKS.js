@@ -160,7 +160,7 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    if (g_menuScreenOn ||true) {
+    if (g_menuScreenOn || true) {
 
       entityManager.render(ctx);
       if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -202,8 +202,11 @@ function requestPreloads() {
         player2hover: "../images/button_2playerhover.png",
         howToPlay: "../images/button_how-to-play.png",
         howToPlayhover: "../images/button_how-to-playhover.png",
+        goBack: "../images/button_go-back.png",
+        goBackhover: "../images/button_go-backhover.png",
         menuScr: "../images/MenuScreen.png",
         map: "../images/map.png"
+
 
     };
 
@@ -235,6 +238,8 @@ function preloadDone() {
     g_sprites.btnHTP = new Sprite(g_images.howToPlay);
     g_sprites.btnHTPhover = new Sprite(g_images.howToPlayhover);
     g_sprites.menuScr = new Sprite(g_images.menuScr);
+    g_sprites.goBack = new Sprite(g_images.goBack);
+    g_sprites.goBackhover = new Sprite(g_images.goBackhover);
     g_sprites.map = new Sprite(g_images.map);
 
     entityManager.init();
