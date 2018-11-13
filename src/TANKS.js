@@ -46,7 +46,8 @@ var g_ctx = g_canvas.getContext("2d");
 // CREATE INITIAL SHIPS
 // ====================
 
-function createInitialTanks() {
+function createInitialTanks(twoPlayer) {
+  console.log(twoPlayer);
 
     entityManager.generateTank({
         cx : 270,
@@ -60,7 +61,8 @@ function createInitialTanks() {
         player : 1
     });
 
-    entityManager.generateTank({
+    if (twoPlayer) {
+      entityManager.generateTank({
         cx : 270,
         cy : 100,
         KEY_FORWARD : 38,
@@ -70,7 +72,8 @@ function createInitialTanks() {
         KEY_FIRE   : 13,
         sprite : g_sprites.tank2,
         player : 2
-    });
+      });
+    }
 
 }
 
@@ -160,7 +163,7 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    if (g_menuScreenOn || true) {
+    if (g_menuScreenOn) {
 
       entityManager.render(ctx);
       if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -243,7 +246,6 @@ function preloadDone() {
     g_sprites.map = new Sprite(g_images.map);
 
     entityManager.init();
-    createInitialTanks();
 
     main.init();
 }

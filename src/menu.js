@@ -14,6 +14,8 @@ var mainScreen = true;
 var mapScreen = false;
 var htpScreen = false;
 
+var twoPlayers;
+
 var menu = {
 
   screen : function(ctx) {
@@ -100,17 +102,22 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
   var w = g_sprites.btnHTP.width/2;
   var h = g_sprites.btnHTP.height/2;
 
-  if ( g_canvas.width/2 - w < x && x < g_canvas.width/2 + w ) {
-    if ( (btn1Y < y && y < btn1Y + h*2) || (btn2Y < y && y < btn2Y + h*2) ) {
-      mapScreen = true;
-      mainScreen = false;
-      htpScreen = false;
-    }
+  if (mainScreen) {
+    if ( g_canvas.width/2 - w < x && x < g_canvas.width/2 + w ) {
+      if ( (btn1Y < y && y < btn1Y + h*2) || (btn2Y < y && y < btn2Y + h*2) ) {
+        mapScreen = true;
+        mainScreen = false;
+        htpScreen = false;
+        twoPlayers = false;
 
-    if ( btn3Y < y && y < btn3Y + h*2 ) {
-      mapScreen = false;
-      mainScreen = false;
-      htpScreen = true;
+        if (btn2Y < y && y < btn2Y + h*2) twoPlayers = true;
+      }
+
+      if ( btn3Y < y && y < btn3Y + h*2 ) {
+        mapScreen = false;
+        mainScreen = false;
+        htpScreen = true;
+      }
     }
   }
 
@@ -123,6 +130,36 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
     }
   }
 
+  if (mapScreen) {
+
+    var imgH = g_sprites.map.height/2;
+    var imgW = g_sprites.map.width/2;
+
+    if(200 - imgW < x && x < 200 + imgW) {
+
+      if(200 - imgH < y && y < 200 + imgH) {
+        g_menuScreenOn = true;
+        createInitialTanks(twoPlayers);
+      }
+      if(400 - imgH < y && y < 400 + imgH) {
+        g_menuScreenOn = true;
+        createInitialTanks(twoPlayers);
+      }
+    }
+
+    if(400 - imgW < x && x < 400 + imgW) {
+
+      if(200 - imgH < y && y < 200 + imgH) {
+        g_menuScreenOn = true;
+        createInitialTanks(twoPlayers);
+      }
+      if(400 - imgH < y && y < 400 + imgH) {
+        g_menuScreenOn = true;
+        createInitialTanks(twoPlayers);
+      }
+    }
+  }
+
   g_mouseXClick = 0;
   g_mouseYClick = 0;
 }
@@ -132,20 +169,22 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
   var h = g_sprites.btnHTP.height/2;
 
   // check if you are inside one of the three button on front page
-  if ( g_canvas.width/2 - w < x && x < g_canvas.width/2 + w ) {
-    if ( btn1Y < y && y < btn1Y + h*2 ) {
-      hover1player = true;
-      return;
-    }
+  if (mainScreen) {
+    if ( g_canvas.width/2 - w < x && x < g_canvas.width/2 + w ) {
+      if ( btn1Y < y && y < btn1Y + h*2 ) {
+        hover1player = true;
+        return;
+      }
 
-    if ( btn2Y < y && y < btn2Y + h*2 ) {
-      hover2player = true;
-      return;
-    }
+      if ( btn2Y < y && y < btn2Y + h*2 ) {
+        hover2player = true;
+        return;
+      }
 
-    if ( btn3Y < y && y < btn3Y + h*2 ) {
-      hoverHTP = true;
-      return;
+      if ( btn3Y < y && y < btn3Y + h*2 ) {
+        hoverHTP = true;
+        return;
+      }
     }
   }
 
@@ -157,6 +196,38 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
     }
   }
 
+  if (mapScreen) {
+
+    var imgH = g_sprites.map.height/2;
+    var imgW = g_sprites.map.width/2;
+
+    if(200 - imgW < x && x < 200 + imgW) {
+
+      if(200 - imgH < y && y < 200 + imgH) {
+        //console.log(23)
+        return;
+      }
+      if(400 - imgH < y && y < 400 + imgH) {
+        //console.log(23);
+        return;
+      }
+    }
+
+    if(400 - imgW < x && x < 400 + imgW) {
+
+      if(200 - imgH < y && y < 200 + imgH) {
+        //console.log(23);
+        return;
+      }
+      if(400 - imgH < y && y < 400 + imgH) {
+        //console.log(23);
+        return;
+      }
+    }
+
+    g_sprites.map.height = 100;
+    g_sprites.map.width = 100;
+  }
 
   hover1player = false;
   hover2player = false;
