@@ -196,6 +196,7 @@ function requestPreloads() {
         bullet   : "../images/bullet.png",
         explosion   : "../images/explosion.png",
         bomb   : "../images/bomb.png",
+        shield : "../images/shield.png",
         barrel   : "../images/Barrel.png",
         turret   : "../images/turret.png",
         gameOverIMG : "../images/gameOver.png",
@@ -220,7 +221,7 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
-
+    //Gameplay
     g_sprites.tank1  = new Sprite(g_images.tank1);
     g_sprites.tank2 = new Sprite(g_images.tank2);
     g_sprites.box1  = new Sprite(g_images.box1);
@@ -228,12 +229,14 @@ function preloadDone() {
     g_sprites.box3  = new Sprite(g_images.box3);
     g_sprites.box4  = new Sprite(g_images.box4);
     g_sprites.floor  = new Sprite(g_images.floor);
-
     g_sprites.bullet = new Sprite(g_images.bullet);
     g_sprites.explosion = new Sprite(g_images.explosion);
     g_sprites.barrel = new Sprite(g_images.barrel);
     g_sprites.turret = new Sprite(g_images.turret);
+    //Powerups
     g_sprites.bomb = new Sprite(g_images.bomb);
+    g_sprites.shield = new Sprite(g_images.shield);
+    //GameOptions
     g_sprites.gameOverIMG = new Sprite(g_images.gameOverIMG);
     g_sprites.redX = new Sprite(g_images.redX);
     g_sprites.btnPlayer1 = new Sprite(g_images.player1);

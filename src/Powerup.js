@@ -21,9 +21,10 @@ function Powerup(descr) {
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isWarping = false;
-    this.sprite = [g_sprites.bomb, g_sprites.bomb];
+    this.sprite = [g_sprites.bomb, g_sprites.shield];
 
     this.powerupType = this.getRandPowerup();
+    this.type = "PowerUp";
 };
 
 Powerup.prototype = new Entity();
@@ -85,7 +86,11 @@ Powerup.prototype.getRadius = function () {
 };
 
 Powerup.prototype.takeBulletHit = function () {
-
+    if(this.powerupType === 0){
+        entityManager.makeExplosion(
+            this.cx, this.cy, 40);
+        this._isDeadNow = true;
+    }
 };
 
 Powerup.prototype.takeExplosionHit = function () {
@@ -93,14 +98,17 @@ Powerup.prototype.takeExplosionHit = function () {
 };
 
 Powerup.prototype.render = function (ctx) {
-    console.log("pu render");
-    
     var scale = this.scale;
     var spriteWidth = g_sprites.bomb.width/3;
     var spriteHeight = g_sprites.bomb.height;
-
-    this.sprite[this.powerupType].customDrawWrappedCentredAt(
-        ctx, this.cx, this.cy, scale*2*this.getRadius(), scale*2*this.getRadius(), this.rotation/2, 0, 0, spriteWidth, spriteHeight
-    );
-
+    if(this.powerupType === 0){
+        this.sprite[this.powerupType].customDrawWrappedCentredAt(
+            ctx, this.cx, this.cy, scale*2*this.getRadius(), scale*2*this.getRadius(), this.rotation/2, 0, 0, spriteWidth, spriteHeight
+        );
+    }
+    else{
+        this.sprite[this.powerupType].customDrawWrappedCentredAt(
+            ctx, this.cx, this.cy, scale*1.5*this.getRadius(), scale*1.5*this.getRadius(), this.rotation/2,
+        );
+    }
 };

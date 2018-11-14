@@ -55,7 +55,9 @@ Tank.prototype.radius = this.width/2;
 Tank.prototype.lives = 3;
 Tank.prototype.respawnMinDist = 200;
 Tank.prototype.shootingBumper = 0;
-
+Tank.prototype.bombs = 0;
+Tank.prototype.shield = 0;
+Tank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
 // HACKED-IN AUDIO (no preloading)
 /*
 Tank.prototype.warpSound = new Audio(
@@ -87,6 +89,9 @@ Tank.prototype.update = function (du) {
       return entityManager.KILL_ME_NOW;
     }
 
+    if(this.shield > 0){
+        this.shield -= du;
+    }
     // Perform movement substeps
     var steps = this.numSubSteps;
     var dStep = du / steps;
@@ -96,17 +101,44 @@ Tank.prototype.update = function (du) {
 
     // Handle firing
     this.maybeFireBullet();
-/*
-    var hitEntity = this.findHitEntity();
-    if (hitEntity) {
-        this.warp();
-    } else {
-      spatialManager.register(this);
+
+    var hitPowerup = this.findPowerup();
+    if (hitPowerup) {
+        this.handlePowerup(hitPowerup);
     }
-*/
 
     spatialManager.register(this);
 };
+
+
+Tank.prototype.handlePowerup = function (hitPowerup) {
+    hitPowerup._isDeadNow = true;
+    if(hitPowerup.powerupType === 0){
+        this.handleBombPowerup();
+    }
+    else if (hitPowerup.powerupType === 1){
+        this.handleShieldPowerup();
+    }
+    
+};
+
+Tank.prototype.handleBombPowerup = function () {
+    this.bombs++;
+};
+
+Tank.prototype.handleShieldPowerup = function () {
+    this.shield = this.shieldLifespan;
+    console.log("handle shield");
+    
+};
+
+Tank.prototype.findPowerup = function () {
+    var pos = this.getPos();
+    return spatialManager.findPowerupInRange(
+        pos.posX, pos.posY, this.getRadius()
+    );
+};
+
 
 Tank.prototype.computeSubStep = function (du) {
 
@@ -160,16 +192,20 @@ Tank.prototype.maybeFireBullet = function () {
         var relVelX = dX * relVel;
         var relVelY = dY * relVel;
 
-        entityManager.fireBullet(
-           this.cx + dX * launchDist, this.cy + dY * launchDist,
-           this.velX + relVelX, this.velY + relVelY,
-           this.rotation);
-        /*
-        entityManager.fireBomb(
-            this.cx + dX * launchDist, this.cy + dY * launchDist,
-            this.velX + relVelX, this.velY + relVelY,
-            this.rotation);
-            */
+        if(this.bombs > 0){
+            entityManager.fireBomb(
+                this.cx + dX * launchDist, this.cy + dY * launchDist,
+                this.velX + relVelX, this.velY + relVelY,
+                this.rotation);
+            this.bombs--;
+        }
+        else{
+            entityManager.fireBullet(
+                this.cx + dX * launchDist, this.cy + dY * launchDist,
+                this.velX + relVelX, this.velY + relVelY,
+                this.rotation);
+        }
+    
     }
 
 };
@@ -179,40 +215,49 @@ Tank.prototype.getRadius = function () {
 };
 
 Tank.prototype.takeBulletHit = function () {
-    this.currentHP -= 10;
-    if (this.currentHP <= 0) {
-        this.lives--;
+    if(this.shield > 0){
 
-        entityManager.makeExplosion(
-          this.cx, this.cy, 20);
-
-        if (this.lives > 0) {
-          this.currentHP = this.fullHP;
-          this.respawn()
+    }
+    else{
+        this.currentHP -= 10;
+        if (this.currentHP <= 0) {
+            this.lives--;
+    
+            entityManager.makeExplosion(
+              this.cx, this.cy, 20);
+    
+            if (this.lives > 0) {
+              this.currentHP = this.fullHP;
+              this.respawn()
+            }
+            else {
+              this._isDeadNow = true;
+              gameOver(this.player);
+          }
         }
-        else {
-          this._isDeadNow = true;
-          gameOver(this.player);
-      }
     }
 
 };
 
 Tank.prototype.takeExplosionHit = function () {
-    this.currentHP -= 30;
-    if (this.currentHP <= 0) {
-        this.lives--;
+    if(this.shield > 0){
 
-        entityManager.makeExplosion(
-          this.cx, this.cy, 20);
-
-        if (this.lives > 0) {
-          this.currentHP = this.fullHP;
-          this.respawn()
-        }
-        else this._isDeadNow = true;
     }
-
+    else{
+        this.currentHP -= 30;
+        if (this.currentHP <= 0) {
+            this.lives--;
+    
+            entityManager.makeExplosion(
+              this.cx, this.cy, 20);
+    
+            if (this.lives > 0) {
+              this.currentHP = this.fullHP;
+              this.respawn()
+            }
+            else this._isDeadNow = true;
+        }
+    }
 };
 
 /* Tank respawns at a mostly random location. Distance between old and new
@@ -270,16 +315,32 @@ Tank.prototype.render = function (ctx) {
 	ctx, this.cx, this.cy, this.width, this.height, this.rotation
     );
     this.sprite.scale = origScale;
-
-    //hp bar
-    var barHeight = 5;
-    var barWidth = this.width;
-    util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
-        barWidth, barHeight,
-        "Red");
-    if(this.currentHP > 0){
+    
+    if(this.shield > 0){
+        //shield bar
+        var barHeight = 5;
+        var barWidth = this.width;
         util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
-        barWidth * (this.currentHP/this.fullHP), barHeight,
-        "Green");
+            barWidth, barHeight,
+            "Grey");
+        util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
+            barWidth * (this.shield/this.shieldLifespan), barHeight,
+            "Blue");
+        g_sprites.shield.customDrawWrappedCentredAt(
+            ctx, this.cx, this.cy, 3.5*this.getRadius(), 3.5*this.getRadius(), 0,
+        );
+    }
+    else{
+        //hp bar
+        var barHeight = 5;
+        var barWidth = this.width;
+        util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
+            barWidth, barHeight,
+            "Red");
+        if(this.currentHP > 0){
+            util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
+            barWidth * (this.currentHP/this.fullHP), barHeight,
+            "Green");
+        }
     }
 };

@@ -161,6 +161,29 @@ findAllEntitesInRange: function(posX, posY, radius) {
     return entities;
 },
 
+
+findPowerupInRange: function(posX, posY, radius) {
+
+    
+    for (var ID in this._entities) {
+        if(this._entities[ID].entity.type == "PowerUp"){
+            var e = this._entities[ID];
+            if(e.radius){
+                var xdist = posX - e.posX;
+                var ydist = posY - e.posY;
+        
+                var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
+        
+                if (distance < radius + e.radius) {
+                return e.entity;
+                }
+            }
+            
+        }
+    }
+},
+
+
 checkBoxCollision: function(posX, posY, radius) {
     for (var ID in this._entities) {
         if(this._entities[ID].entity.type == "Wall" && this._entities[ID].entity.life > 1){
