@@ -164,6 +164,12 @@ Tank.prototype.maybeFireBullet = function () {
            this.cx + dX * launchDist, this.cy + dY * launchDist,
            this.velX + relVelX, this.velY + relVelY,
            this.rotation);
+        /*
+        entityManager.fireBomb(
+            this.cx + dX * launchDist, this.cy + dY * launchDist,
+            this.velX + relVelX, this.velY + relVelY,
+            this.rotation);
+            */
     }
 
 };

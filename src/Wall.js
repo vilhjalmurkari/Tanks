@@ -126,6 +126,12 @@ Wall.prototype.takeBulletHit = function () {
     if(this.life > 0 && this.life < 4){
         this.life--;
         this.woodBreaking.play();
+        //last break of the box maybe gives a powerup
+        
+        if(this.life === 1){
+            entityManager.makePowerup(
+                this.cx + g_brickwall.width/2, this.cy + g_brickwall.height/2);   
+        }
     }
     if(this.life === 5){
         entityManager.makeExplosion(
@@ -154,14 +160,7 @@ Wall.prototype.takeExplosionHit = function () {
     }
 };
 
-Wall.prototype.render = function (ctx) {
 
-    if(this.life > 0){
-        this.sprite[this.life].drawCustomImgAt(
-            ctx, this.cx, this.cy, this.width, this.height
-            );
-    }
-};
 
 Wall.prototype.fireTurret = function() {
     var launchDist = 25;
@@ -188,3 +187,12 @@ Wall.prototype.fireTurret = function() {
         0);
     
 }
+
+Wall.prototype.render = function (ctx) {
+
+    if(this.life > 0){
+        this.sprite[this.life].drawCustomImgAt(
+            ctx, this.cx, this.cy, this.width, this.height
+            );
+    }
+};
