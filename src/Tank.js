@@ -58,6 +58,7 @@ Tank.prototype.shootingBumper = 0;
 Tank.prototype.bombs = 0;
 Tank.prototype.shield = 0;
 Tank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
+Tank.prototype.wallPadding = 5;
 // HACKED-IN AUDIO (no preloading)
 /*
 Tank.prototype.warpSound = new Audio(
@@ -156,7 +157,12 @@ Tank.prototype.moveTank = function (du) {
     if (keys[this.KEY_FORWARD]) {
         var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
         var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
-        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius)){
+/*
+        if(this.checkPadding(this.cx + deltaX, this.cy + deltaY, this.getRadius(), this.wallPadding)){
+            this.cx += +Math.sin(this.rotation) * this.stepsize * du * 0.5;
+            this.cy += -Math.cos(this.rotation) * this.stepsize * du * 0.5;
+        }*/
+        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
             this.cx += +Math.sin(this.rotation) * this.stepsize * du;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du;
         }
@@ -164,7 +170,7 @@ Tank.prototype.moveTank = function (du) {
     if (keys[this.KEY_BACKWARDS]) {
         var deltaX = +Math.sin(this.rotation) * -this.stepsize * du;
         var deltaY = -Math.cos(this.rotation) * -this.stepsize * du;
-        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius)){
+        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
             this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
             this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
         }
@@ -174,7 +180,15 @@ Tank.prototype.moveTank = function (du) {
 
 Tank.prototype.canMove = function (x, y, rad) {
     var canIt = spatialManager.checkBoxCollision(
-        x, y, this.getRadius()
+        x, y, this.getRadius() - this.wallPadding
+    );
+
+    return !canIt;
+};
+
+Tank.prototype.checkPadding = function (x, y, rad, padding) {
+    var canIt = spatialManager.checkBoxPadding(
+        x, y, this.getRadius(), padding
     );
 
     return !canIt;
