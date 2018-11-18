@@ -47,11 +47,10 @@ var g_ctx = g_canvas.getContext("2d");
 // ====================
 
 function createInitialTanks(twoPlayer) {
-  console.log(twoPlayer);
 
     entityManager.generateTank({
-        cx : 270,
-        cy : 255,
+        cx : 60,
+        cy : 540,
         KEY_FORWARD : 'W'.charCodeAt(0),
         KEY_BACKWARDS  : 'S'.charCodeAt(0),
         KEY_LEFT   : 'A'.charCodeAt(0),
@@ -63,8 +62,8 @@ function createInitialTanks(twoPlayer) {
 
     if (twoPlayer) {
       entityManager.generateTank({
-        cx : 270,
-        cy : 100,
+        cx : 540,
+        cy : 60,
         KEY_FORWARD : 38,
         KEY_BACKWARDS  : 40,
         KEY_LEFT   : 37,
@@ -166,6 +165,7 @@ function renderSimulation(ctx) {
     if (g_menuScreenOn) {
 
       entityManager.render(ctx);
+
       if (g_renderSpatialDebug) spatialManager.render(ctx);
 
     } else {
@@ -210,7 +210,11 @@ function requestPreloads() {
         goBack: "../images/button_go-back.png",
         goBackhover: "../images/button_go-backhover.png",
         menuScr: "../images/MenuScreen.png",
-        map: "../images/map.png"
+        level1: "../images/level1.png",
+        level2: "../images/level2.png",
+        level3: "../images/level3.png",
+        unknown: "../images/unknown.png",
+        tankstext: "../images/TANKStext.png"
 
 
     };
@@ -248,9 +252,14 @@ function preloadDone() {
     g_sprites.menuScr = new Sprite(g_images.menuScr);
     g_sprites.goBack = new Sprite(g_images.goBack);
     g_sprites.goBackhover = new Sprite(g_images.goBackhover);
-    g_sprites.map = new Sprite(g_images.map);
+    g_sprites.level1 = new Sprite(g_images.level1);
+    g_sprites.level2 = new Sprite(g_images.level2);
+    g_sprites.level3 = new Sprite(g_images.level3);
+    g_sprites.unknown = new Sprite(g_images.unknown);
+    g_sprites.tankstext = new Sprite(g_images.tankstext);
 
-    entityManager.init();
+
+    //entityManager.init();
 
     main.init();
 }

@@ -40,9 +40,9 @@ _bShowRocks : true,
 
 // "PRIVATE" METHODS
 
-_generateWalls : function() {
+_generateWalls : function(level) {
 
-  var brick = g_brickwall.wall2;
+  var brick = level;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
@@ -110,8 +110,8 @@ deferredSetup : function () {
     this._categories = [this._floor, this._walls, this._tanks, this._bullets, this._explosions, this._bombs, this._powerUp];
 },
 
-init: function() {
-    this._generateWalls();
+init: function(level) {
+    this._generateWalls(level);
     this._generateFloor();
     //this._generateTank();
 },

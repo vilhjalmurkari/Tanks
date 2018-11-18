@@ -42,12 +42,17 @@ var menu = {
 }
 
 function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
+  var tankstext = g_sprites.tankstext;
+
   var button1 = g_sprites.btnPlayer1;
   var button1hover = g_sprites.btnPlayer1hover;
   var button2 = g_sprites.btnPlayer2;
   var button2hover = g_sprites.btnPlayer2hover;
   var buttonHTP = g_sprites.btnHTP;
   var buttonHTPhover = g_sprites.btnHTPhover;
+
+  console.log(tankstext.width);
+  tankstext.drawCustomImgAt(ctx, g_canvas.width/2 - (tankstext.width*0.9)/2, 50, tankstext.width*0.9, tankstext.height*0.9);
 
   if (hover1player)
     button1hover.drawCustomImgAt(ctx, 220, btn1Y, button1hover.width, button1hover.height);
@@ -67,17 +72,21 @@ function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
 }
 
 function drawMapScreen(ctx, btnGBY) {
-  var map = g_sprites.map;
+  var level1 = g_sprites.level1;
+  var level2 = g_sprites.level2;
+  var level3 = g_sprites.level3;
+  var unknown = g_sprites.unknown;
+
 
   ctx.font="40px Arial";
 
   ctx.fillText("Select a map",200,75);
 
 
-  map.drawCustomImgAt(ctx, 150, 150, map.width, map.height);
-  map.drawCustomImgAt(ctx, 350, 150, map.width, map.height);
-  map.drawCustomImgAt(ctx, 150, 350, map.width, map.height);
-  map.drawCustomImgAt(ctx, 350, 350, map.width, map.height);
+  level1.drawCustomImgAt(ctx, 150, 150, level1.width, level1.height);
+  level2.drawCustomImgAt(ctx, 350, 150, level2.width, level2.height);
+  level3.drawCustomImgAt(ctx, 150, 350, level3.width, level3.height);
+  unknown.drawCustomImgAt(ctx, 350, 350, unknown.width, unknown.height);
 
   drawGBbutton(ctx, btnGBY);
 
@@ -132,18 +141,20 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
 
   if (mapScreen) {
 
-    var imgH = g_sprites.map.height/2;
-    var imgW = g_sprites.map.width/2;
+    var imgH = g_sprites.level1.height/2;
+    var imgW = g_sprites.level1.width/2;
 
     if(200 - imgW < x && x < 200 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level1);
       }
       if(400 - imgH < y && y < 400 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level3);
       }
     }
 
@@ -152,10 +163,12 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
       if(200 - imgH < y && y < 200 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level2);
       }
       if(400 - imgH < y && y < 400 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.levelRandom);
       }
     }
   }
@@ -198,8 +211,8 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
 
   if (mapScreen) {
 
-    var imgH = g_sprites.map.height/2;
-    var imgW = g_sprites.map.width/2;
+    var imgH = g_sprites.level1.height/2;
+    var imgW = g_sprites.level1.width/2;
 
     if(200 - imgW < x && x < 200 + imgW) {
 
@@ -225,8 +238,6 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
       }
     }
 
-    g_sprites.map.height = 100;
-    g_sprites.map.width = 100;
   }
 
   hover1player = false;
