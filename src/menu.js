@@ -16,11 +16,15 @@ var htpScreen = false;
 
 var twoPlayers;
 
+var gameMusic = new Audio(
+  "../sounds/gameMusic.mp3");
+
 var menu = {
 
   screen : function(ctx) {
 
     var menu = g_sprites.menuScr;
+
 
     var btn1Y = 240;
     var btn2Y = 300;
@@ -51,7 +55,6 @@ function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
   var buttonHTP = g_sprites.btnHTP;
   var buttonHTPhover = g_sprites.btnHTPhover;
 
-  console.log(tankstext.width);
   tankstext.drawCustomImgAt(ctx, g_canvas.width/2 - (tankstext.width*0.9)/2, 50, tankstext.width*0.9, tankstext.height*0.9);
 
   if (hover1player)

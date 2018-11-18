@@ -258,8 +258,7 @@ function preloadDone() {
     g_sprites.unknown = new Sprite(g_images.unknown);
     g_sprites.tankstext = new Sprite(g_images.tankstext);
 
-
-    //entityManager.init();
+    gameMusic.play();
 
     main.init();
 }
