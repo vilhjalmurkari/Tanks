@@ -80,22 +80,38 @@ function drawMapScreen(ctx, btnGBY) {
   var level3 = g_sprites.level3;
   var unknown = g_sprites.unknown;
 
+  var levels = [{level: g_sprites.level1, x: 150, y: 150},
+                {level: g_sprites.level2, x: 350, y: 150},
+                {level: g_sprites.level3, x: 150, y: 350},
+                {level: g_sprites.unknown, x: 350, y: 350}];
 
   ctx.font="40px Arial";
 
   ctx.fillText("Select a map",200,75);
 
+  for (var i = 0; i < levels.length; i++) {
 
-  level1.drawCustomImgAt(ctx, 150, 150, level1.width, level1.height);
-  level2.drawCustomImgAt(ctx, 350, 150, level2.width, level2.height);
-  level3.drawCustomImgAt(ctx, 150, 350, level3.width, level3.height);
-  unknown.drawCustomImgAt(ctx, 350, 350, unknown.width, unknown.height);
+    if (levels[i].level.width == 115) {
+      drawLevelImage(ctx, levels[i].level, levels[i].x-7.5, levels[i].y-7.5);
+    } else {
+      drawLevelImage(ctx, levels[i].level, levels[i].x, levels[i].y);
+    }
+
+  }
 
   drawGBbutton(ctx, btnGBY);
 
 }
 
+function drawLevelImage(ctx, level, x, y) {
+  level.drawCustomImgAt(ctx, x, y, level.width, level.height);
+}
+
 function drawHTPScreen(ctx, btnGBY) {
+
+  ctx.font="20px Arial";
+
+  ctx.fillText("The objective of the game is to kill the opponent",100,100);
 
   drawGBbutton(ctx, btnGBY);
 }
@@ -220,11 +236,11 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
     if(200 - imgW < x && x < 200 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
-        //console.log(23)
+        changeImgSize(g_sprites.level1, 115, 115);
         return;
       }
       if(400 - imgH < y && y < 400 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.level3, 115, 115);
         return;
       }
     }
@@ -232,14 +248,17 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
     if(400 - imgW < x && x < 400 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.level2, 115, 115);
         return;
       }
       if(400 - imgH < y && y < 400 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.unknown, 115, 115);
         return;
       }
     }
+
+    resetMapImage();
+
 
   }
 
@@ -247,4 +266,24 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
   hover2player = false;
   hoverHTP = false;
   hoverGoBack = false;
+}
+
+function changeImgSize(img, w, h) {
+  img.height = h;
+  img.width = w;
+}
+
+function resetMapImage() {
+  g_sprites.level1.height = 100;
+  g_sprites.level1.width = 100;
+
+  g_sprites.level2.height = 100;
+  g_sprites.level2.width = 100;
+
+  g_sprites.level3.height = 100;
+  g_sprites.level3.width = 100;
+
+  g_sprites.unknown.height = 100;
+  g_sprites.unknown.width = 100;
+
 }
