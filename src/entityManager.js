@@ -31,6 +31,7 @@ var entityManager = {
 _floor   : [],
 _walls   : [],
 _tanks   : [],
+_enimyTanks : [],
 _bullets : [],
 _bombs   : [],
 _powerUp : [],
@@ -42,7 +43,7 @@ _bShowRocks : true,
 
 _generateWalls : function() {
 
-  var brick = g_brickwall.wall2;
+  var brick = g_brickwall.wall;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
@@ -107,13 +108,19 @@ KILL_ME_NOW : -1,
 // i.e. thing which need `this` to be defined.
 //
 deferredSetup : function () {
-    this._categories = [this._floor, this._walls, this._tanks, this._bullets, this._explosions, this._bombs, this._powerUp];
+    this._categories = [this._floor,
+                        this._walls,
+                        this._tanks,
+                        this._enimyTanks,
+                        this._bullets,
+                        this._explosions,
+                        this._bombs,
+                        this._powerUp];
 },
 
 init: function() {
     this._generateWalls();
     this._generateFloor();
-    //this._generateTank();
 },
 
 fireBullet: function(cx, cy, velX, velY, rotation) {
@@ -167,6 +174,9 @@ generateTank : function(descr) {
     this._tanks.push(new Tank(descr));
 },
 
+generateEnimyTank : function(descr) {
+    this._enimyTanks.push(new EnimyTank(descr));
+},
 
 update: function(du) {
 

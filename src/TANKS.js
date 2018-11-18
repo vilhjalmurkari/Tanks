@@ -47,11 +47,22 @@ var g_ctx = g_canvas.getContext("2d");
 // ====================
 
 function createInitialTanks(twoPlayer) {
-  console.log(twoPlayer);
 
     entityManager.generateTank({
         cx : 270,
         cy : 255,
+        KEY_FORWARD : 'W'.charCodeAt(0),
+        KEY_BACKWARDS  : 'S'.charCodeAt(0),
+        KEY_LEFT   : 'A'.charCodeAt(0),
+        KEY_RIGHT  : 'D'.charCodeAt(0),
+        KEY_FIRE   : ' '.charCodeAt(0),
+        sprite : g_sprites.tank1,
+        player : 1
+    });
+
+    entityManager.generateEnimyTank({
+        cx : 270,
+        cy : 350,
         KEY_FORWARD : 'W'.charCodeAt(0),
         KEY_BACKWARDS  : 'S'.charCodeAt(0),
         KEY_LEFT   : 'A'.charCodeAt(0),

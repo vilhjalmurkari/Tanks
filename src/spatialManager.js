@@ -70,6 +70,52 @@ unregister: function(entity) {
 
 },
 
+findNearestTank: function(posX, posY) {
+
+    var nearestTank = false;
+    var nearestTankDist = Infinity;
+    for (var ID in this._entities) {
+        if(this._entities[ID].entity.type == "Tank"){         
+            var e = this._entities[ID];
+            var xdist = posX - e.posX;
+            var ydist = posY - e.posY;
+    
+            var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
+    
+            if (distance < nearestTankDist) {
+            nearestTank = e.entity;
+            nearestTankDist = distance
+            }
+        
+        }
+    }
+    return {tank: nearestTank, dist: nearestTankDist};
+
+},
+
+findNearestPowerup: function(posX, posY) {
+
+    var nearestPowerup = false;
+    var nearestPowerupDist = Infinity;
+    for (var ID in this._entities) {
+        if(this._entities[ID].entity.type == "Powerup"){         
+            var e = this._entities[ID];
+            var xdist = posX - e.posX;
+            var ydist = posY - e.posY;
+    
+            var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
+    
+            if (distance < nearestPowerupDist) {
+            nearestPowerup = e.entity;
+            nearestPowerupDist = distance
+            }
+        
+        }
+    }
+    return {powerup: nearestPowerup, dist: nearestPowerupDist};
+
+},
+
 findEntityInRange: function(posX, posY, radius) {
 
     
