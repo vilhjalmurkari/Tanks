@@ -41,9 +41,9 @@ _bShowRocks : true,
 
 // "PRIVATE" METHODS
 
-_generateWalls : function() {
+_generateWalls : function(level) {
 
-  var brick = g_brickwall.wall;
+  var brick = level;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
@@ -118,8 +118,8 @@ deferredSetup : function () {
                         this._powerUp];
 },
 
-init: function() {
-    this._generateWalls();
+init: function(level) {
+    this._generateWalls(level);
     this._generateFloor();
 },
 

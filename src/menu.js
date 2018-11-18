@@ -16,11 +16,15 @@ var htpScreen = false;
 
 var twoPlayers;
 
+var gameMusic = new Audio(
+  "../sounds/gameMusic.mp3");
+
 var menu = {
 
   screen : function(ctx) {
 
     var menu = g_sprites.menuScr;
+
 
     var btn1Y = 240;
     var btn2Y = 300;
@@ -42,12 +46,16 @@ var menu = {
 }
 
 function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
+  var tankstext = g_sprites.tankstext;
+
   var button1 = g_sprites.btnPlayer1;
   var button1hover = g_sprites.btnPlayer1hover;
   var button2 = g_sprites.btnPlayer2;
   var button2hover = g_sprites.btnPlayer2hover;
   var buttonHTP = g_sprites.btnHTP;
   var buttonHTPhover = g_sprites.btnHTPhover;
+
+  tankstext.drawCustomImgAt(ctx, g_canvas.width/2 - (tankstext.width*0.9)/2, 50, tankstext.width*0.9, tankstext.height*0.9);
 
   if (hover1player)
     button1hover.drawCustomImgAt(ctx, 220, btn1Y, button1hover.width, button1hover.height);
@@ -67,23 +75,43 @@ function drawMainScreen(ctx, btn1Y, btn2Y, btn3Y) {
 }
 
 function drawMapScreen(ctx, btnGBY) {
-  var map = g_sprites.map;
+  var level1 = g_sprites.level1;
+  var level2 = g_sprites.level2;
+  var level3 = g_sprites.level3;
+  var unknown = g_sprites.unknown;
+
+  var levels = [{level: g_sprites.level1, x: 150, y: 150},
+                {level: g_sprites.level2, x: 350, y: 150},
+                {level: g_sprites.level3, x: 150, y: 350},
+                {level: g_sprites.unknown, x: 350, y: 350}];
 
   ctx.font="40px Arial";
 
   ctx.fillText("Select a map",200,75);
 
+  for (var i = 0; i < levels.length; i++) {
 
-  map.drawCustomImgAt(ctx, 150, 150, map.width, map.height);
-  map.drawCustomImgAt(ctx, 350, 150, map.width, map.height);
-  map.drawCustomImgAt(ctx, 150, 350, map.width, map.height);
-  map.drawCustomImgAt(ctx, 350, 350, map.width, map.height);
+    if (levels[i].level.width == 115) {
+      drawLevelImage(ctx, levels[i].level, levels[i].x-7.5, levels[i].y-7.5);
+    } else {
+      drawLevelImage(ctx, levels[i].level, levels[i].x, levels[i].y);
+    }
+
+  }
 
   drawGBbutton(ctx, btnGBY);
 
 }
 
+function drawLevelImage(ctx, level, x, y) {
+  level.drawCustomImgAt(ctx, x, y, level.width, level.height);
+}
+
 function drawHTPScreen(ctx, btnGBY) {
+
+  ctx.font="20px Arial";
+
+  ctx.fillText("The objective of the game is to kill the opponent",100,100);
 
   drawGBbutton(ctx, btnGBY);
 }
@@ -132,18 +160,20 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
 
   if (mapScreen) {
 
-    var imgH = g_sprites.map.height/2;
-    var imgW = g_sprites.map.width/2;
+    var imgH = g_sprites.level1.height/2;
+    var imgW = g_sprites.level1.width/2;
 
     if(200 - imgW < x && x < 200 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level1);
       }
       if(400 - imgH < y && y < 400 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level3);
       }
     }
 
@@ -152,10 +182,12 @@ function checkMouseClick(x,y, btn1Y, btn2Y, btn3Y, btnGBY) {
       if(200 - imgH < y && y < 200 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.level2);
       }
       if(400 - imgH < y && y < 400 + imgH) {
         g_menuScreenOn = true;
         createInitialTanks(twoPlayers);
+        entityManager.init(g_brickwall.levelRandom);
       }
     }
   }
@@ -198,17 +230,17 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
 
   if (mapScreen) {
 
-    var imgH = g_sprites.map.height/2;
-    var imgW = g_sprites.map.width/2;
+    var imgH = g_sprites.level1.height/2;
+    var imgW = g_sprites.level1.width/2;
 
     if(200 - imgW < x && x < 200 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
-        //console.log(23)
+        changeImgSize(g_sprites.level1, 115, 115);
         return;
       }
       if(400 - imgH < y && y < 400 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.level3, 115, 115);
         return;
       }
     }
@@ -216,21 +248,42 @@ function checkMouseHover(x, y, btn1Y, btn2Y, btn3Y, btnGBY) {
     if(400 - imgW < x && x < 400 + imgW) {
 
       if(200 - imgH < y && y < 200 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.level2, 115, 115);
         return;
       }
       if(400 - imgH < y && y < 400 + imgH) {
-        //console.log(23);
+        changeImgSize(g_sprites.unknown, 115, 115);
         return;
       }
     }
 
-    g_sprites.map.height = 100;
-    g_sprites.map.width = 100;
+    resetMapImage();
+
+
   }
 
   hover1player = false;
   hover2player = false;
   hoverHTP = false;
   hoverGoBack = false;
+}
+
+function changeImgSize(img, w, h) {
+  img.height = h;
+  img.width = w;
+}
+
+function resetMapImage() {
+  g_sprites.level1.height = 100;
+  g_sprites.level1.width = 100;
+
+  g_sprites.level2.height = 100;
+  g_sprites.level2.width = 100;
+
+  g_sprites.level3.height = 100;
+  g_sprites.level3.width = 100;
+
+  g_sprites.unknown.height = 100;
+  g_sprites.unknown.width = 100;
+
 }
