@@ -53,7 +53,7 @@ Tank.prototype.height = 25;
 Tank.prototype.currentHP = 100;
 Tank.prototype.fullHP = 100;
 Tank.prototype.radius = this.width/2;
-Tank.prototype.lives = 3;
+Tank.prototype.lives = 1;
 Tank.prototype.respawnMinDist = 200;
 Tank.prototype.shootingBumper = 0;
 Tank.prototype.bombs = 0;
@@ -121,7 +121,7 @@ Tank.prototype.handlePowerup = function (hitPowerup) {
     else if (hitPowerup.powerupType === 1){
         this.handleShieldPowerup();
     }
-    
+
 };
 
 Tank.prototype.handleBombPowerup = function () {
@@ -221,7 +221,7 @@ Tank.prototype.maybeFireBullet = function () {
                 this.velX + relVelX, this.velY + relVelY,
                 this.rotation);
         }
-    
+
     }
 
 };
@@ -238,10 +238,10 @@ Tank.prototype.takeBulletHit = function () {
         this.currentHP -= 10;
         if (this.currentHP <= 0) {
             this.lives--;
-    
+
             entityManager.makeExplosion(
               this.cx, this.cy, 20);
-    
+
             if (this.lives > 0) {
               this.currentHP = this.fullHP;
               this.respawn()
@@ -263,10 +263,10 @@ Tank.prototype.takeExplosionHit = function () {
         this.currentHP -= 30;
         if (this.currentHP <= 0) {
             this.lives--;
-    
+
             entityManager.makeExplosion(
               this.cx, this.cy, 20);
-    
+
             if (this.lives > 0) {
               this.currentHP = this.fullHP;
               this.respawn()
@@ -331,7 +331,7 @@ Tank.prototype.render = function (ctx) {
 	ctx, this.cx, this.cy, this.width, this.height, this.rotation
     );
     this.sprite.scale = origScale;
-    
+
     if(this.shield > 0){
         //shield bar
         var barHeight = 5;

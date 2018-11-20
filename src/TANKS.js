@@ -121,10 +121,11 @@ function updateSimulation(du) {
 
     processDiagnostics();
 
-    if(!isGameOver)
+    //if(!isGameOver)
     entityManager.update(du);
 
-    else screen.update(du);
+    if(isGameOver)
+    gameOverScreen.update(du);
 
     // Prevent perpetual firing!
     eatKey(Tank.prototype.KEY_FIRE);
@@ -134,7 +135,8 @@ var screen;
 var isGameOver = false;
 
 function gameOver (loser) {
-    screen = new GameOverScr({loser: loser});
+    gameOverScreen.setWinner(loser);
+    entityManager.killAll();
     isGameOver = true;
 }
 
@@ -175,7 +177,6 @@ function processDiagnostics() {
 function renderSimulation(ctx) {
 
     if (g_menuScreenOn) {
-
       entityManager.render(ctx);
 
       if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -185,7 +186,7 @@ function renderSimulation(ctx) {
     }
 
 
-    if (isGameOver) screen.render(ctx);
+    if (isGameOver) gameOverScreen.render(ctx);
 }
 
 

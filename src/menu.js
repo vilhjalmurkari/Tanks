@@ -287,3 +287,17 @@ function resetMapImage() {
   g_sprites.unknown.width = 100;
 
 }
+
+function resetMenu () {
+  g_menuScreenOn = false;
+  hover1player = false;
+  hover2player = false;
+  hoverHTP = false;
+  hoverGoBack = false;
+
+  twoPlayers = false;
+
+  mainScreen = true;
+  mapScreen = false;
+  htpScreen = false;
+}

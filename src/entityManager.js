@@ -178,6 +178,20 @@ generateEnemyTank : function(descr) {
     this._enemyTanks.push(new EnemyTank(descr));
 },
 
+killAll : function () {
+  for (var c = 0; c < this._categories.length; ++c) {
+
+      var aCategory = this._categories[c];
+
+
+      for (var i = 0; i < aCategory.length; ++i) {
+
+          aCategory[i].kill();
+
+      }
+  }
+},
+
 update: function(du) {
 
     for (var c = 0; c < this._categories.length; ++c) {
