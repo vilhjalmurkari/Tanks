@@ -233,7 +233,7 @@ EnemyTank.prototype.checkPadding = function (x, y, rad, padding) {
 
 EnemyTank.prototype.maybeFireBullet = function (du) {
 
-    
+
     var fireAngleCalc = Math.abs(this.rotation-this.entityAngle);
     var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
     var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
@@ -261,7 +261,7 @@ EnemyTank.prototype.maybeFireBullet = function (du) {
                 this.velX + relVelX, this.velY + relVelY,
                 this.rotation);
         }
-    
+
     }
     if (this.fireRate >= this.fireSpeed) {
         this.fireRate = 0;
@@ -303,7 +303,7 @@ EnemyTank.prototype.takeBulletHit = function () {
                 }
                 entityManager.makeExplosion(
                   this.cx, this.cy, 20);
-        
+
                 if (enemylives > 0) {
                     this._isDeadNow = true;
                 }
@@ -347,7 +347,7 @@ EnemyTank.prototype.takeExplosionHit = function () {
                 }
                 entityManager.makeExplosion(
                   this.cx, this.cy, 20);
-        
+
                 if (enemylives > 0) {
                     this._isDeadNow = true;
                 }
@@ -433,7 +433,7 @@ EnemyTank.prototype.findNearestTankdist = function () {
 EnemyTank.prototype.findRotationToTargetEntity = function () {
     var nearestTank = spatialManager.findNearestTank(this.cx, this.cy);
     var nearestPowerup = spatialManager.findNearestPowerup(this.cx, this.cy);
-    var targetEntity = nearestTank.tank;    
+    var targetEntity = nearestTank.tank;
     if(nearestPowerup.dist < nearestTank.dist/2){
         var targetEntity = nearestPowerup.powerup;
     }
@@ -444,7 +444,7 @@ EnemyTank.prototype.findRotationToTargetEntity = function () {
     return false;
 }
 
-EnemyTank.prototype.calculateRotation = function (nearestTank) {   
+EnemyTank.prototype.calculateRotation = function (nearestTank) {
     var delta_x = nearestTank.cx - this.cx;
     var delta_y = this.cy - nearestTank.cy;
     var theta_radians = Math.PI/2 - Math.atan2(delta_y, delta_x);
@@ -452,7 +452,7 @@ EnemyTank.prototype.calculateRotation = function (nearestTank) {
         theta_radians = Math.PI*2 + theta_radians;
     }
     return theta_radians;
-    
+
 }
 EnemyTank.prototype.updateRotation = function (du) {
     var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
@@ -482,7 +482,7 @@ EnemyTank.prototype.updateRotation = function (du) {
         if(diff > Math.PI - 0.1 && diff < Math.PI + 0.1){
             this.angleCorrection = true;
         }
-    
+
         if(this.angleCorrection){
             this.rotation += NOMINAL_ROTATE_RATE * du;
             diff = Math.abs(this.entityAngle - this.rotation);
@@ -496,7 +496,7 @@ EnemyTank.prototype.updateRotation = function (du) {
         else if (this.entityAngle < this.rotation) {
             this.rotation -= NOMINAL_ROTATE_RATE * du;
         }
-    
+
         if(this.rotation > Math.PI * 2){
             this.rotation = 0;
         }
@@ -510,7 +510,7 @@ EnemyTank.prototype.updateRotation = function (du) {
     else if(this.moveFromWall < 0){
         this.moveFromWall++;
     }
-    
+
 };
 
 EnemyTank.prototype.render = function (ctx) {
@@ -522,7 +522,7 @@ EnemyTank.prototype.render = function (ctx) {
 	ctx, this.cx, this.cy, this.width, this.height, this.rotation
     );
     this.sprite.scale = origScale;
-    
+
     if(this.shield > 0){
         //shield bar
         var barHeight = 5;

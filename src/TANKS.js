@@ -96,12 +96,6 @@ function createInitialTanks(twoPlayer) {
 
 }
 
-Tank.prototype.KEY_FORWARD = 'W'.charCodeAt(0);
-Tank.prototype.KEY_BACKWARDS  = 'S'.charCodeAt(0);
-Tank.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
-Tank.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
-Tank.prototype.KEY_FIRE   = ' '.charCodeAt(0);
-
 // =============
 // GATHER INPUTS
 // =============
@@ -163,10 +157,6 @@ function processDiagnostics() {
       if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
 }
-
-
-
-
 
 // =================
 // RENDER SIMULATION
