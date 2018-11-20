@@ -178,10 +178,13 @@ Tank.prototype.moveTank = function (du) {
 };
 
 Tank.prototype.canMove = function (x, y, rad) {
-    var canIt = spatialManager.checkBoxCollision(
+    var boxCheck = spatialManager.checkBoxCollision(
         x, y, this.getRadius() - this.wallPadding
     );
-
+    var tankCheck = spatialManager.checkTankVTankCollision(
+        x, y, this.getRadius()
+    )
+    var canIt = boxCheck || tankCheck;
     return !canIt;
 };
 

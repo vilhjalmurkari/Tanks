@@ -212,7 +212,7 @@ findPowerupInRange: function(posX, posY, radius) {
 
     
     for (var ID in this._entities) {
-        if(this._entities[ID].entity.type == "PowerUp"){
+        if(this._entities[ID].entity.type == "Powerup"){
             var e = this._entities[ID];
             if(e.radius){
                 var xdist = posX - e.posX;
@@ -229,6 +229,26 @@ findPowerupInRange: function(posX, posY, radius) {
     }
 },
 
+checkTankVTankCollision: function(posX, posY, radius) {
+    
+    for (var ID in this._entities) {
+        if(this._entities[ID].entity.type == "EnemyTank" || this._entities[ID].entity.type == "Tank"){
+            var e = this._entities[ID];
+            if(e.radius){
+                var xdist = posX - e.posX;
+                var ydist = posY - e.posY;
+        
+                var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
+        
+                if (distance < radius + e.radius) {
+                return e.entity;
+                }
+            }
+                    
+        }
+    }
+    return false;
+},
 
 checkBoxCollision: function(posX, posY, radius) {
     for (var ID in this._entities) {

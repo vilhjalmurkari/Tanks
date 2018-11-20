@@ -13,7 +13,7 @@
 
 
 // A generic contructor which accepts an arbitrary descriptor object
-function EnimyTank(descr) {
+function EnemyTank(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
@@ -21,16 +21,17 @@ function EnimyTank(descr) {
     this.rememberResets();
 
     // Default sprite, if not otherwise specified
-    this.sprite = this.sprite || g_sprites.tank1;
+    this.sprite = this.sprite || g_sprites.tank3;
 
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isWarping = false;
+    this.type = "EnemyTank";
 };
 
-EnimyTank.prototype = new Entity();
+EnemyTank.prototype = new Entity();
 
-EnimyTank.prototype.rememberResets = function () {
+EnemyTank.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_cx = this.cx;
     this.reset_cy = this.cy;
@@ -39,36 +40,37 @@ EnimyTank.prototype.rememberResets = function () {
 
 
 // Initial, inheritable, default values
-EnimyTank.prototype.rotation = 0;
-EnimyTank.prototype.cx = 200;
-EnimyTank.prototype.cy = 200;
-EnimyTank.prototype.velX = 0;
-EnimyTank.prototype.velY = 0;
-EnimyTank.prototype.launchVel = 2;
-EnimyTank.prototype.numSubSteps = 1;
-EnimyTank.prototype.stepsize = 3;
-EnimyTank.prototype.width = 25;
-EnimyTank.prototype.height = 25;
-EnimyTank.prototype.currentHP = 100;
-EnimyTank.prototype.fullHP = 100;
-EnimyTank.prototype.radius = this.width/2;
-EnimyTank.prototype.lives = 3;
-EnimyTank.prototype.respawnMinDist = 200;
-EnimyTank.prototype.shootingBumper = 0;
-EnimyTank.prototype.bombs = 0;
-EnimyTank.prototype.shield = 0;
-EnimyTank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
-EnimyTank.prototype.wallPadding = 5;
-EnimyTank.prototype.fireRate = 0;
-EnimyTank.prototype.entityAngle = 0;
-EnimyTank.prototype.angleCorrection = 0;
+EnemyTank.prototype.rotation = 0;
+EnemyTank.prototype.cx = 200;
+EnemyTank.prototype.cy = 200;
+EnemyTank.prototype.velX = 0;
+EnemyTank.prototype.velY = 0;
+EnemyTank.prototype.launchVel = 2;
+EnemyTank.prototype.numSubSteps = 1;
+EnemyTank.prototype.stepsize = 3;
+EnemyTank.prototype.width = 25;
+EnemyTank.prototype.height = 25;
+EnemyTank.prototype.currentHP = 100;
+EnemyTank.prototype.fullHP = 100;
+EnemyTank.prototype.radius = this.width/2;
+EnemyTank.prototype.lives = 3;
+EnemyTank.prototype.respawnMinDist = 200;
+EnemyTank.prototype.shootingBumper = 0;
+EnemyTank.prototype.bombs = 0;
+EnemyTank.prototype.shield = 0;
+EnemyTank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
+EnemyTank.prototype.wallPadding = 5;
+EnemyTank.prototype.fireRate = 0;
+EnemyTank.prototype.entityAngle = 0;
+EnemyTank.prototype.angleCorrection = 0;
+EnemyTank.prototype.moveFromWall = 0;
 // HACKED-IN AUDIO (no preloading)
 /*
-EnimyTank.prototype.warpSound = new Audio(
+EnemyTank.prototype.warpSound = new Audio(
     "sounds/shipWarp.ogg");
 */
 
-EnimyTank.prototype.warp = function () {
+EnemyTank.prototype.warp = function () {
 
     this._isWarping = true;
     this._scaleDirn = -1;
@@ -79,7 +81,7 @@ EnimyTank.prototype.warp = function () {
     spatialManager.unregister(this);
 };
 
-EnimyTank.prototype.update = function (du) {
+EnemyTank.prototype.update = function (du) {
 
     // Handle warping
     /*
@@ -103,7 +105,7 @@ EnimyTank.prototype.update = function (du) {
         this.computeSubStep(dStep);
     }
     // Handle firing
-    this.maybeFireBullet();
+    this.maybeFireBullet(du);
 
     var hitPowerup = this.findPowerup();
     if (hitPowerup) {
@@ -114,7 +116,7 @@ EnimyTank.prototype.update = function (du) {
 };
 
 
-EnimyTank.prototype.handlePowerup = function (hitPowerup) {
+EnemyTank.prototype.handlePowerup = function (hitPowerup) {
     hitPowerup._isDeadNow = true;
     if(hitPowerup.powerupType === 0){
         this.handleBombPowerup();
@@ -125,17 +127,15 @@ EnimyTank.prototype.handlePowerup = function (hitPowerup) {
     
 };
 
-EnimyTank.prototype.handleBombPowerup = function () {
+EnemyTank.prototype.handleBombPowerup = function () {
     this.bombs++;
 };
 
-EnimyTank.prototype.handleShieldPowerup = function () {
+EnemyTank.prototype.handleShieldPowerup = function () {
     this.shield = this.shieldLifespan;
-    console.log("handle shield");
-    
 };
 
-EnimyTank.prototype.findPowerup = function () {
+EnemyTank.prototype.findPowerup = function () {
     var pos = this.getPos();
     return spatialManager.findPowerupInRange(
         pos.posX, pos.posY, this.getRadius()
@@ -143,7 +143,7 @@ EnimyTank.prototype.findPowerup = function () {
 };
 
 
-EnimyTank.prototype.computeSubStep = function (du) {
+EnemyTank.prototype.computeSubStep = function (du) {
 
     this.moveTank(du);
 
@@ -154,9 +154,9 @@ EnimyTank.prototype.computeSubStep = function (du) {
     }
 };
 
-EnimyTank.prototype.moveTank = function (du) {
-        
-   // if (keys[false]) {
+EnemyTank.prototype.moveTank = function (du) {
+    var nearestTankDist = this.findNearestTankdist();
+    if (!this.angleCorrection && nearestTankDist > 50) {
         var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
         var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
 /*
@@ -168,21 +168,29 @@ EnimyTank.prototype.moveTank = function (du) {
             this.cx += +Math.sin(this.rotation) * this.stepsize * du * 0.8;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du * 0.8;
         }
-        else{
-           // this.rotation += NOMINAL_ROTATE_RATE * du
+        else if(this.moveFromWall > - 10 && this.moveFromWall < 10 && this.moveFromWall !== 0){
+            var deltaX = +Math.sin(this.rotation) * -this.stepsize * du;
+            var deltaY = -Math.cos(this.rotation) * -this.stepsize * du;
+            if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
+                this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
+                this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
+            }
         }
-    //}
+    }
 };
 
-EnimyTank.prototype.canMove = function (x, y, rad) {
-    var canIt = spatialManager.checkBoxCollision(
+EnemyTank.prototype.canMove = function (x, y, rad) {
+    var boxCheck = spatialManager.checkBoxCollision(
         x, y, this.getRadius() - this.wallPadding
     );
-
+    var tankCheck = spatialManager.checkTankVTankCollision(
+        x, y, this.getRadius()
+    )
+    var canIt = boxCheck || tankCheck;
     return !canIt;
 };
 
-EnimyTank.prototype.checkPadding = function (x, y, rad, padding) {
+EnemyTank.prototype.checkPadding = function (x, y, rad, padding) {
     var canIt = spatialManager.checkBoxPadding(
         x, y, this.getRadius(), padding
     );
@@ -190,21 +198,15 @@ EnimyTank.prototype.checkPadding = function (x, y, rad, padding) {
     return !canIt;
 };
 
-EnimyTank.prototype.maybeFireBullet = function () {
-    /*
-    console.log("rot");
-    
-    console.log(this.rotation);
-    console.log("enti");
-    
-    console.log(this.entityAngle);
-    */
+EnemyTank.prototype.maybeFireBullet = function (du) {
+
     
     var fireAngleCalc = Math.abs(this.rotation-this.entityAngle);
-    console.log(this.fireRate);
-    console.log(this.fireRate === 40 && fireAngleCalc < 1);
-    
-    if (this.fireRate === 40 && fireAngleCalc < 1) {
+    var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
+    var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
+    var isStuck = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())
+
+    if ((this.fireRate === 30 && fireAngleCalc < 1) || (!isStuck && this.fireRate === 30)) {
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = this.getRadius() * 1.6;
@@ -228,18 +230,18 @@ EnimyTank.prototype.maybeFireBullet = function () {
         }
     
     }
-    if (this.fireRate === 40) {
+    if (this.fireRate === 30) {
         this.fireRate = 0;
     }
     this.fireRate++;
 
 };
 
-EnimyTank.prototype.getRadius = function () {
+EnemyTank.prototype.getRadius = function () {
     return (this.width / 2) * 0.9;
 };
 
-EnimyTank.prototype.takeBulletHit = function () {
+EnemyTank.prototype.takeBulletHit = function () {
     if(this.shield > 0){
 
     }
@@ -264,7 +266,7 @@ EnimyTank.prototype.takeBulletHit = function () {
 
 };
 
-EnimyTank.prototype.takeExplosionHit = function () {
+EnemyTank.prototype.takeExplosionHit = function () {
     if(this.shield > 0){
 
     }
@@ -285,9 +287,9 @@ EnimyTank.prototype.takeExplosionHit = function () {
     }
 };
 
-/* EnimyTank respawns at a mostly random location. Distance between old and new
+/* EnemyTank respawns at a mostly random location. Distance between old and new
 location must be at least respawnMinDist on both the x- and the y-axis.*/
-EnimyTank.prototype.respawn = function () {
+EnemyTank.prototype.respawn = function () {
     //Available space on the x-axis
     var availableX = g_canvas.width - this.respawnMinDist*2;
     //Available space on the y-axis
@@ -299,7 +301,7 @@ EnimyTank.prototype.respawn = function () {
     this.cy = util.randRange(distCY, distCY + availableY);
     this.wrapPosition();
 
-    //Adjust new position if the EnimyTank lands on a box
+    //Adjust new position if the EnemyTank lands on a box
     while (!this.canMove(this.cx, this.cy, this.radius)) {
       this.cx += 30;
       this.cy +=30;
@@ -308,24 +310,34 @@ EnimyTank.prototype.respawn = function () {
 
 }
 
-EnimyTank.prototype.reset = function () {
+EnemyTank.prototype.reset = function () {
     this.setPos(this.reset_cx, this.reset_cy);
     this.rotation = this.reset_rotation;
 
     this.halt();
 };
 
-EnimyTank.prototype.halt = function () {
+EnemyTank.prototype.halt = function () {
     this.velX = 0;
     this.velY = 0;
 };
 
 var NOMINAL_ROTATE_RATE = 0.08;
 
-EnimyTank.prototype.findRotationToTargetEntity = function () {
+EnemyTank.prototype.findNearestTankdist = function () {
     var nearestTank = spatialManager.findNearestTank(this.cx, this.cy);
     var nearestPowerup = spatialManager.findNearestPowerup(this.cx, this.cy);
     var targetEntity = nearestTank.tank;
+    if(nearestPowerup.dist > nearestTank.dist/2){
+        return nearestTank.dist;
+    }
+    return Infinity;
+}
+
+EnemyTank.prototype.findRotationToTargetEntity = function () {
+    var nearestTank = spatialManager.findNearestTank(this.cx, this.cy);
+    var nearestPowerup = spatialManager.findNearestPowerup(this.cx, this.cy);
+    var targetEntity = nearestTank.tank;    
     if(nearestPowerup.dist < nearestTank.dist/2){
         var targetEntity = nearestPowerup.powerup;
     }
@@ -336,7 +348,7 @@ EnimyTank.prototype.findRotationToTargetEntity = function () {
     return false;
 }
 
-EnimyTank.prototype.calculateRotation = function (nearestTank) {   
+EnemyTank.prototype.calculateRotation = function (nearestTank) {   
     var delta_x = nearestTank.cx - this.cx;
     var delta_y = this.cy - nearestTank.cy;
     var theta_radians = Math.PI/2 - Math.atan2(delta_y, delta_x);
@@ -346,15 +358,27 @@ EnimyTank.prototype.calculateRotation = function (nearestTank) {
     return theta_radians;
     
 }
-
-EnimyTank.prototype.updateRotation = function (du) {
+EnemyTank.prototype.updateRotation = function (du) {
     var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
     var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
 
     if(!this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
-        console.log(this.rotation);
-        
-        this.rotation += NOMINAL_ROTATE_RATE * du;
+        if(this.moveFromWall === 0){
+            var rand = Math.random();
+            if(rand < 0.5){
+                this.moveFromWall = 90;
+            }
+            else{
+                this.moveFromWall = -90;
+            }
+        }
+        if(this.moveFromWall > 0){
+            this.rotation += NOMINAL_ROTATE_RATE * du;
+        }
+        else if(this.moveFromWall < 0){
+            this.rotation -= NOMINAL_ROTATE_RATE * du;
+        }
+
     }
     else{
         this.entityAngle = this.findRotationToTargetEntity();
@@ -384,10 +408,16 @@ EnimyTank.prototype.updateRotation = function (du) {
             this.rotation = Math.PI *2;
         }
     }
+    if(this.moveFromWall > 0){
+        this.moveFromWall--;
+    }
+    else if(this.moveFromWall < 0){
+        this.moveFromWall++;
+    }
     
 };
 
-EnimyTank.prototype.render = function (ctx) {
+EnemyTank.prototype.render = function (ctx) {
 
     var origScale = this.sprite.scale;
     // pass my scale into the sprite, for drawing

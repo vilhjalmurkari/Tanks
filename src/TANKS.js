@@ -60,7 +60,7 @@ function createInitialTanks(twoPlayer) {
         player : 1
     });
 
-    entityManager.generateEnimyTank({
+    entityManager.generateEnemyTank({
         cx : 270,
         cy : 350,
         KEY_FORWARD : 'W'.charCodeAt(0),
@@ -68,7 +68,7 @@ function createInitialTanks(twoPlayer) {
         KEY_LEFT   : 'A'.charCodeAt(0),
         KEY_RIGHT  : 'D'.charCodeAt(0),
         KEY_FIRE   : ' '.charCodeAt(0),
-        sprite : g_sprites.tank1,
+        sprite : g_sprites.tank3,
         player : 1
     });
 
@@ -200,6 +200,7 @@ function requestPreloads() {
     var requiredImages = {
         tank1   : "../images/Tank1.png",
         tank2  : "../images/Tank2.png",
+        tank3  : "../images/Tank3.png",
         box1   : "../images/Box1.png",
         box2   : "../images/Box2.png",
         box3   : "../images/Box3.png",
@@ -240,6 +241,7 @@ function preloadDone() {
     //Gameplay
     g_sprites.tank1  = new Sprite(g_images.tank1);
     g_sprites.tank2 = new Sprite(g_images.tank2);
+    g_sprites.tank3 = new Sprite(g_images.tank3);
     g_sprites.box1  = new Sprite(g_images.box1);
     g_sprites.box2  = new Sprite(g_images.box2);
     g_sprites.box3  = new Sprite(g_images.box3);

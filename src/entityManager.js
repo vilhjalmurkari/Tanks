@@ -31,7 +31,7 @@ var entityManager = {
 _floor   : [],
 _walls   : [],
 _tanks   : [],
-_enimyTanks : [],
+_enemyTanks : [],
 _bullets : [],
 _bombs   : [],
 _powerUp : [],
@@ -111,7 +111,7 @@ deferredSetup : function () {
     this._categories = [this._floor,
                         this._walls,
                         this._tanks,
-                        this._enimyTanks,
+                        this._enemyTanks,
                         this._bullets,
                         this._explosions,
                         this._bombs,
@@ -174,8 +174,8 @@ generateTank : function(descr) {
     this._tanks.push(new Tank(descr));
 },
 
-generateEnimyTank : function(descr) {
-    this._enimyTanks.push(new EnimyTank(descr));
+generateEnemyTank : function(descr) {
+    this._enemyTanks.push(new EnemyTank(descr));
 },
 
 update: function(du) {

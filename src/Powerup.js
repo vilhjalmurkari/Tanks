@@ -24,7 +24,7 @@ function Powerup(descr) {
     this.sprite = [g_sprites.bomb, g_sprites.shield];
 
     this.powerupType = this.getRandPowerup();
-    this.type = "PowerUp";
+    this.type = "Powerup";
 };
 
 Powerup.prototype = new Entity();
