@@ -239,7 +239,8 @@ function requestPreloads() {
         level2: "../images/level2.png",
         level3: "../images/level3.png",
         unknown: "../images/unknown.png",
-        tankstext: "../images/TANKStext.png"
+        tankstext: "../images/TANKStext.png",
+        fire: "../images/fire.png"
 
 
     };
@@ -286,6 +287,7 @@ function preloadDone() {
     g_sprites.level3 = new Sprite(g_images.level3);
     g_sprites.unknown = new Sprite(g_images.unknown);
     g_sprites.tankstext = new Sprite(g_images.tankstext);
+    g_sprites.fire = new Sprite(g_images.fire);
 
     gameMusic.play();
 
