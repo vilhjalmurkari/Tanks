@@ -15,7 +15,8 @@ var mapScreen = false;
 var htpScreen = false;
 
 var twoPlayers;
-
+var numEnemies = 1;
+var enemylives = 3;
 var gameMusic = new Audio(
   "../sounds/gameMusic.mp3");
 

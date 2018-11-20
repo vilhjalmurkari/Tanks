@@ -17,12 +17,21 @@ GameOverScr.prototype.winnerSprite;
 GameOverScr.prototype.loserSprite;
 
 GameOverScr.prototype.setWinner = function (loser) {
-    if(loser === 2) {
+    if(loser === 3) {
+        this.winnerSprite = g_sprites.tank1;
+        this.loserSprite = g_sprites.tank3;
+      }
+    else if(loser === 2) {
       this.winnerSprite = g_sprites.tank1;
       this.loserSprite = g_sprites.tank2;
     }
     else {
-      this.winnerSprite = g_sprites.tank2;
+        if(twoPlayers){
+            this.winnerSprite = g_sprites.tank2;
+        }
+        else{
+            this.winnerSprite = g_sprites.tank3;
+        }
       this.loserSprite = g_sprites.tank1;
     }
 }
