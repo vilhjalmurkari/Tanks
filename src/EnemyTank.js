@@ -20,6 +20,9 @@ function EnemyTank(descr) {
 
     this.rememberResets();
 
+    if(this.randomLoc){
+        this.spawn();
+    }
     // Default sprite, if not otherwise specified
     this.sprite = this.sprite || g_sprites.tank3;
 
@@ -45,6 +48,7 @@ EnemyTank.prototype.cx = 200;
 EnemyTank.prototype.cy = 200;
 EnemyTank.prototype.velX = 0;
 EnemyTank.prototype.velY = 0;
+EnemyTank.prototype.extraSpeed = 0.8;
 EnemyTank.prototype.launchVel = 2;
 EnemyTank.prototype.numSubSteps = 1;
 EnemyTank.prototype.stepsize = 3;
@@ -61,6 +65,8 @@ EnemyTank.prototype.shield = 0;
 EnemyTank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
 EnemyTank.prototype.wallPadding = 5;
 EnemyTank.prototype.fireRate = 0;
+EnemyTank.prototype.fireSpeed = 30;
+EnemyTank.prototype.orginalFireSpeed = 30;
 EnemyTank.prototype.entityAngle = 0;
 EnemyTank.prototype.angleCorrection = 0;
 EnemyTank.prototype.moveFromWall = 0;
@@ -124,7 +130,15 @@ EnemyTank.prototype.handlePowerup = function (hitPowerup) {
     else if (hitPowerup.powerupType === 1){
         this.handleShieldPowerup();
     }
-    
+    else if (hitPowerup.powerupType === 2){
+        this.handleSpeedPowerup();
+    }
+    else if (hitPowerup.powerupType === 3){
+        this.handleReaperPowerup();
+    }
+    else if (hitPowerup.powerupType === 4){
+        this.handleFirepowerPowerup();
+    }
 };
 
 EnemyTank.prototype.handleBombPowerup = function () {
@@ -133,6 +147,29 @@ EnemyTank.prototype.handleBombPowerup = function () {
 
 EnemyTank.prototype.handleShieldPowerup = function () {
     this.shield = this.shieldLifespan;
+};
+
+EnemyTank.prototype.handleSpeedPowerup = function () {
+    if(this.extraSpeed < 1.8){
+        this.extraSpeed += 0.1;
+    }
+};
+
+EnemyTank.prototype.handleReaperPowerup = function () {
+    this.currentHP = 100;
+};
+
+EnemyTank.prototype.handleFirepowerPowerup = function () {
+    if(this.fireSpeed > 14){
+        this.fireSpeed = this.fireSpeed - 2
+    }
+};
+
+EnemyTank.prototype.handleResetPowerup = function () {
+    this.extraSpeed = 0.8;
+    this.shield = 0;
+    this.bombs = 0;
+    this.fireSpeed = this.orginalFireSpeed;
 };
 
 EnemyTank.prototype.findPowerup = function () {
@@ -157,23 +194,19 @@ EnemyTank.prototype.computeSubStep = function (du) {
 EnemyTank.prototype.moveTank = function (du) {
     var nearestTankDist = this.findNearestTankdist();
     if (!this.angleCorrection && nearestTankDist > 50) {
-        var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
-        var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
-/*
-        if(this.checkPadding(this.cx + deltaX, this.cy + deltaY, this.getRadius(), this.wallPadding)){
-            this.cx += +Math.sin(this.rotation) * this.stepsize * du * 0.5;
-            this.cy += -Math.cos(this.rotation) * this.stepsize * du * 0.5;
-        }*/
+        var deltaX = +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+        var deltaY = -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
+
         if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
-            this.cx += +Math.sin(this.rotation) * this.stepsize * du * 0.8;
-            this.cy += -Math.cos(this.rotation) * this.stepsize * du * 0.8;
+            this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+            this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
         }
         else if(this.moveFromWall > - 10 && this.moveFromWall < 10 && this.moveFromWall !== 0){
-            var deltaX = +Math.sin(this.rotation) * -this.stepsize * du;
-            var deltaY = -Math.cos(this.rotation) * -this.stepsize * du;
+            var deltaX = +Math.sin(this.rotation) * -this.stepsize * this.extraSpeed;
+            var deltaY = -Math.cos(this.rotation) * -this.stepsize * this.extraSpeed;
             if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
-                this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
-                this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
+                this.cx += +Math.sin(this.rotation) * -this.stepsize * this.extraSpeed;
+                this.cy += -Math.cos(this.rotation) * -this.stepsize * this.extraSpeed;
             }
         }
     }
@@ -206,7 +239,7 @@ EnemyTank.prototype.maybeFireBullet = function (du) {
     var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
     var isStuck = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())
 
-    if ((this.fireRate === 30 && fireAngleCalc < 1) || (!isStuck && this.fireRate === 30)) {
+    if ((this.fireRate >= this.fireSpeed && fireAngleCalc < 1) || (!isStuck && this.fireRate >= this.fireSpeed)) {
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = this.getRadius() * 1.6;
@@ -230,7 +263,7 @@ EnemyTank.prototype.maybeFireBullet = function (du) {
         }
     
     }
-    if (this.fireRate === 30) {
+    if (this.fireRate >= this.fireSpeed) {
         this.fireRate = 0;
     }
     this.fireRate++;
@@ -243,24 +276,42 @@ EnemyTank.prototype.getRadius = function () {
 
 EnemyTank.prototype.takeBulletHit = function () {
     if(this.shield > 0){
-
     }
     else{
         this.currentHP -= 10;
         if (this.currentHP <= 0) {
-            this.lives--;
-    
-            entityManager.makeExplosion(
-              this.cx, this.cy, 20);
-    
-            if (this.lives > 0) {
-              this.currentHP = this.fullHP;
-              this.respawn()
+            if(twoPlayers){
+                this.respawn();
+                this.currentHP = this.fullHP;
             }
-            else {
-              this._isDeadNow = true;
-              gameOver(this.player);
-          }
+            else{
+                if(numEnemies > 0){
+                    numEnemies--;
+                }
+                if(numEnemies === 0 && enemylives > 0){
+                    enemylives--;
+                    for(var i = 0; i < 4 - enemylives; i++) {
+                        entityManager.generateEnemyTank({
+                            cx : 270,
+                            cy : 350,
+                            sprite : g_sprites.tank3,
+                            player : 3,
+                            randomLoc: true,
+                        });
+                    }
+                    numEnemies = 4 - enemylives;
+                }
+                entityManager.makeExplosion(
+                  this.cx, this.cy, 20);
+        
+                if (enemylives > 0) {
+                    this._isDeadNow = true;
+                }
+                else {
+                  this._isDeadNow = true;
+                  gameOver(this.player);
+              }
+            }
         }
     }
 
@@ -273,16 +324,38 @@ EnemyTank.prototype.takeExplosionHit = function () {
     else{
         this.currentHP -= 30;
         if (this.currentHP <= 0) {
-            this.lives--;
-    
-            entityManager.makeExplosion(
-              this.cx, this.cy, 20);
-    
-            if (this.lives > 0) {
-              this.currentHP = this.fullHP;
-              this.respawn()
+            if(twoPlayers){
+                this.respawn();
+                this.currentHP = this.fullHP;
             }
-            else this._isDeadNow = true;
+            else{
+                if(numEnemies > 0){
+                    numEnemies--;
+                }
+                if(numEnemies === 0 && enemylives > 0){
+                    enemylives--;
+                    for(var i = 0; i < 4 - enemylives; i++) {
+                        entityManager.generateEnemyTank({
+                            cx : 270,
+                            cy : 350,
+                            sprite : g_sprites.tank3,
+                            player : 3,
+                            randomLoc: true,
+                        });
+                    }
+                    numEnemies = 4 - enemylives;
+                }
+                entityManager.makeExplosion(
+                  this.cx, this.cy, 20);
+        
+                if (enemylives > 0) {
+                    this._isDeadNow = true;
+                }
+                else {
+                  this._isDeadNow = true;
+                  gameOver(this.player);
+              }
+            }
         }
     }
 };
@@ -296,6 +369,29 @@ EnemyTank.prototype.respawn = function () {
     var availableY = g_canvas.height - this.respawnMinDist*2;
     var distCX = this.cx + this.respawnMinDist;
     var distCY = this.cy + this.respawnMinDist;
+
+    this.cx = util.randRange(distCX, distCX + availableX);
+    this.cy = util.randRange(distCY, distCY + availableY);
+    this.wrapPosition();
+
+    //Adjust new position if the EnemyTank lands on a box
+    while (!this.canMove(this.cx, this.cy, this.radius)) {
+      this.cx += 30;
+      this.cy +=30;
+      this.wrapPosition();
+    }
+
+}
+
+EnemyTank.prototype.spawn = function () {
+    //Available space on the x-axis
+    var availableX = g_canvas.width - this.respawnMinDist*2;
+    //Available space on the y-axis
+    var availableY = g_canvas.height - this.respawnMinDist*2;
+    var xRand = 100 + Math.floor(Math.random() * (g_canvas.width - 100));
+    var yRand = 100 + Math.floor(Math.random() * (g_canvas.height - 100));
+    var distCX = xRand + this.respawnMinDist;
+    var distCY = yRand + this.respawnMinDist;
 
     this.cx = util.randRange(distCX, distCX + availableX);
     this.cy = util.randRange(distCY, distCY + availableY);
@@ -452,6 +548,13 @@ EnemyTank.prototype.render = function (ctx) {
             util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
             barWidth * (this.currentHP/this.fullHP), barHeight,
             "Green");
+        }
+    }
+    if(!twoPlayers){
+        for(var i = 0; i < enemylives; i++){
+            this.sprite.customDrawWrappedCentredAt(
+                ctx, g_canvas.width - 30 - (i*this.width - 5), 30, this.width/2, this.height/2, 0
+                );
         }
     }
 };

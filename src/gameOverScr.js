@@ -18,12 +18,21 @@ GameOverScr.prototype.winnerSprite;
 GameOverScr.prototype.loserSprite;
 
 GameOverScr.prototype.setWinner = function (loser) {
-    if(loser === 2) {
+    if(loser === 3) {
+        this.winnerSprite = g_sprites.tank1;
+        this.loserSprite = g_sprites.tank3;
+      }
+    else if(loser === 2) {
       this.winnerSprite = g_sprites.tank1;
       this.loserSprite = g_sprites.tank2;
     }
     else {
-      this.winnerSprite = g_sprites.tank2;
+        if(twoPlayers){
+            this.winnerSprite = g_sprites.tank2;
+        }
+        else{
+            this.winnerSprite = g_sprites.tank3;
+        }
       this.loserSprite = g_sprites.tank1;
     }
 }
@@ -70,6 +79,25 @@ var gameOverScreen = {
     dropSpeed : 3,
 
     setWinner : function(loser) {
+      if(loser === 3) {
+          winnerSprite = g_sprites.tank1;
+          loserSprite = g_sprites.tank3;
+        }
+      else if(loser === 2) {
+        winnerSprite = g_sprites.tank1;
+        loserSprite = g_sprites.tank2;
+      }
+      else {
+          if(twoPlayers){
+              winnerSprite = g_sprites.tank2;
+          }
+          else{
+              winnerSprite = g_sprites.tank3;
+          }
+        loserSprite = g_sprites.tank1;
+      }
+    },
+  /*
       if(loser === 2) {
         winnerSprite = g_sprites.tank1;
         loserSprite = g_sprites.tank2;
@@ -79,7 +107,7 @@ var gameOverScreen = {
         loserSprite = g_sprites.tank1;
       }
     },
-
+*/
     reset : function () {
         this.cx = g_canvas.width/2;
         this.cy = -g_canvas.height/2;

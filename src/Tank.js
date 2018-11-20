@@ -45,6 +45,7 @@ Tank.prototype.cx = 200;
 Tank.prototype.cy = 200;
 Tank.prototype.velX = 0;
 Tank.prototype.velY = 0;
+Tank.prototype.extraSpeed = 1;
 Tank.prototype.launchVel = 2;
 Tank.prototype.numSubSteps = 1;
 Tank.prototype.stepsize = 3;
@@ -60,6 +61,9 @@ Tank.prototype.bombs = 0;
 Tank.prototype.shield = 0;
 Tank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
 Tank.prototype.wallPadding = 5;
+Tank.prototype.fireRate = 0;
+Tank.prototype.orginalFireSpeed = 20;
+Tank.prototype.fireSpeed = 20;
 // HACKED-IN AUDIO (no preloading)
 /*
 Tank.prototype.warpSound = new Audio(
@@ -121,6 +125,15 @@ Tank.prototype.handlePowerup = function (hitPowerup) {
     else if (hitPowerup.powerupType === 1){
         this.handleShieldPowerup();
     }
+    else if (hitPowerup.powerupType === 2){
+        this.handleSpeedPowerup();
+    }
+    else if (hitPowerup.powerupType === 3){
+        this.handleReaperPowerup();
+    }
+    else if (hitPowerup.powerupType === 4){
+        this.handleFirepowerPowerup();
+    }
 
 };
 
@@ -130,6 +143,30 @@ Tank.prototype.handleBombPowerup = function () {
 
 Tank.prototype.handleShieldPowerup = function () {
     this.shield = this.shieldLifespan;
+};
+
+Tank.prototype.handleSpeedPowerup = function () {
+    if(this.extraSpeed < 1.8){
+        this.extraSpeed += 0.1;
+    }
+};
+
+Tank.prototype.handleReaperPowerup = function () {
+    this.lives++;
+    // this.currentHP = 100;
+};
+
+Tank.prototype.handleFirepowerPowerup = function () {
+    if(this.fireSpeed > 8){
+        this.fireSpeed = this.fireSpeed - 2
+    }
+};
+
+Tank.prototype.handleResetPowerup = function () {
+    this.extraSpeed = 1;
+    this.shield = 0;
+    this.bombs = 0;
+    this.fireSpeed = this.orginalFireSpeed;
 };
 
 Tank.prototype.findPowerup = function () {
@@ -154,24 +191,20 @@ Tank.prototype.computeSubStep = function (du) {
 Tank.prototype.moveTank = function (du) {
 
     if (keys[this.KEY_FORWARD]) {
-        var deltaX = +Math.sin(this.rotation) * this.stepsize * du;
-        var deltaY = -Math.cos(this.rotation) * this.stepsize * du;
-/*
-        if(this.checkPadding(this.cx + deltaX, this.cy + deltaY, this.getRadius(), this.wallPadding)){
-            this.cx += +Math.sin(this.rotation) * this.stepsize * du * 0.5;
-            this.cy += -Math.cos(this.rotation) * this.stepsize * du * 0.5;
-        }*/
+        var deltaX = +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+        var deltaY = -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
+
         if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
-            this.cx += +Math.sin(this.rotation) * this.stepsize * du;
-            this.cy += -Math.cos(this.rotation) * this.stepsize * du;
+            this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+            this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
         }
     }
     if (keys[this.KEY_BACKWARDS]) {
-        var deltaX = +Math.sin(this.rotation) * -this.stepsize * du;
-        var deltaY = -Math.cos(this.rotation) * -this.stepsize * du;
+        var deltaX = +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
+        var deltaY = -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
         if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
-            this.cx += +Math.sin(this.rotation) * -this.stepsize * du;
-            this.cy += -Math.cos(this.rotation) * -this.stepsize * du;
+            this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
+            this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
         }
     }
 
@@ -198,8 +231,8 @@ Tank.prototype.checkPadding = function (x, y, rad, padding) {
 
 Tank.prototype.maybeFireBullet = function () {
 
-    if (eatKey(this.KEY_FIRE)) {
-
+    if (this.fireRate >= this.fireSpeed && eatKey(this.KEY_FIRE)) {
+        this.fireRate = 0;
         var dX = +Math.sin(this.rotation);
         var dY = -Math.cos(this.rotation);
         var launchDist = this.getRadius() * 1.6;
@@ -223,6 +256,9 @@ Tank.prototype.maybeFireBullet = function () {
         }
 
     }
+    if(this.fireRate < this.fireSpeed){
+        this.fireRate++;
+    }
 
 };
 
@@ -245,6 +281,7 @@ Tank.prototype.takeBulletHit = function () {
             if (this.lives > 0) {
               this.currentHP = this.fullHP;
               this.respawn()
+              this.handleResetPowerup();
             }
             else {
               this._isDeadNow = true;
@@ -269,9 +306,13 @@ Tank.prototype.takeExplosionHit = function () {
 
             if (this.lives > 0) {
               this.currentHP = this.fullHP;
+              this.handleResetPowerup();
               this.respawn()
             }
-            else this._isDeadNow = true;
+            else{
+                this._isDeadNow = true;
+                gameOver(this.player);
+            }
         }
     }
 };
@@ -323,7 +364,6 @@ Tank.prototype.updateRotation = function (du) {
 };
 
 Tank.prototype.render = function (ctx) {
-
     var origScale = this.sprite.scale;
     // pass my scale into the sprite, for drawing
     this.sprite.scale = this._scale;
@@ -357,6 +397,30 @@ Tank.prototype.render = function (ctx) {
             util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 10,
             barWidth * (this.currentHP/this.fullHP), barHeight,
             "Green");
+        }
+    }
+
+    //fireRate bar
+    var barHeight = 5;
+    var barWidth = this.width;
+    util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 20,
+        barWidth, barHeight,
+        "Grey");
+    util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 20,
+        barWidth * (this.fireRate/this.fireSpeed), barHeight,
+        "Yellow");
+    if(this.player === 1){
+        for(var i = 0; i < this.lives; i++){
+            this.sprite.customDrawWrappedCentredAt(
+                ctx, 30 + (i*this.width + 5), 30, this.width/2, this.height/2, 0
+                );
+        }
+    }
+    else{
+        for(var i = 0; i < this.lives; i++){
+            this.sprite.customDrawWrappedCentredAt(
+                ctx, g_canvas.width - 30 - (i*this.width - 5), 30, this.width/2, this.height/2, 0
+                );
         }
     }
 };

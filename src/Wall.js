@@ -32,7 +32,7 @@ var g_brickwall = {
         [3,3,3,3,5,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,9,9,9,9,9,9,9,0,0,9,9,9,9,9,9,9,9,9,3],
+        [3,0,0,9,9,9,9,9,0,0,9,9,9,9,9,9,9,9,9,3],
         [3,3,3,3,3,3,3,3,0,0,3,3,3,3,3,3,3,3,3,3],
     ],
     //using 9 to represent a random wall
@@ -245,7 +245,7 @@ Wall.prototype.takeBulletHit = function () {
 
         if(this.life === 1){
             var rand = Math.random();
-            if(rand > 0.5){
+            if(rand > 0.3){
                 entityManager.makePowerup(
                     this.cx + g_brickwall.width/2, this.cy + g_brickwall.height/2);
             }

@@ -21,7 +21,7 @@ function Powerup(descr) {
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isWarping = false;
-    this.sprite = [g_sprites.bomb, g_sprites.shield];
+    this.sprite = [g_sprites.bomb, g_sprites.shield, g_sprites.speed, g_sprites.reaper, g_sprites.firepower];
 
     this.powerupType = this.getRandPowerup();
     this.type = "Powerup";
@@ -62,22 +62,17 @@ Powerup.prototype.update = function (du) {
     this.scale = 1 + ((-Math.abs((this.fullScalarVar/2) - this.scalarVar) + (this.fullScalarVar/2)) / (this.fullScalarVar/(this.fullScalarVar/20)));
     this.scalarVar--;
     if(this.scalarVar === 0) this.scalarVar = 60;
-/*
-    var hitEntity = this.findHitEntity();
-    if (hitEntity) {
-        this.warp();
-    } else {
-      spatialManager.register(this);
-    }
-*/
 
     spatialManager.register(this);
 };
 
 Powerup.prototype.getRandPowerup = function () {
     var rand = Math.random();
-    if(rand < 0.5) return 0;
-    else return 1;
+    if(rand < 0.2) return 0;
+    else if(rand < 0.4) return 1;
+    else if(rand < 0.6) return 2;
+    else if(rand < 0.8) return 3;
+    else return 4;
 };
 
 
@@ -94,7 +89,11 @@ Powerup.prototype.takeBulletHit = function () {
 };
 
 Powerup.prototype.takeExplosionHit = function () {
-
+    if(this.powerupType === 0){
+        entityManager.makeExplosion(
+            this.cx, this.cy, 40);
+        this._isDeadNow = true;
+    }
 };
 
 Powerup.prototype.render = function (ctx) {

@@ -60,17 +60,25 @@ function createInitialTanks(twoPlayer) {
         player : 1
     });
 
-    entityManager.generateEnemyTank({
-        cx : 270,
-        cy : 350,
-        KEY_FORWARD : 'W'.charCodeAt(0),
-        KEY_BACKWARDS  : 'S'.charCodeAt(0),
-        KEY_LEFT   : 'A'.charCodeAt(0),
-        KEY_RIGHT  : 'D'.charCodeAt(0),
-        KEY_FIRE   : ' '.charCodeAt(0),
-        sprite : g_sprites.tank3,
-        player : 1
-    });
+    if(twoPlayer){
+        entityManager.generateEnemyTank({
+            cx : 270,
+            cy : 350,
+            sprite : g_sprites.tank3,
+            player : 3,
+            randomLoc: true,
+        });
+    }
+    else{
+        entityManager.generateEnemyTank({
+            cx : 540,
+            cy : 60,
+            sprite : g_sprites.tank3,
+            player : 3,
+            randomLoc: false,
+        });
+    }
+
 
     if (twoPlayer) {
       entityManager.generateTank({
@@ -211,6 +219,9 @@ function requestPreloads() {
         explosion   : "../images/explosion.png",
         bomb   : "../images/bomb.png",
         shield : "../images/shield.png",
+        speed : "../images/speed.png",
+        reaper : "../images/reaper.png",
+        firepower : "../images/firepower.png",
         barrel   : "../images/Barrel.png",
         turret   : "../images/turret.png",
         gameOverIMG : "../images/gameOver.png",
@@ -255,6 +266,9 @@ function preloadDone() {
     //Powerups
     g_sprites.bomb = new Sprite(g_images.bomb);
     g_sprites.shield = new Sprite(g_images.shield);
+    g_sprites.speed = new Sprite(g_images.speed);
+    g_sprites.reaper = new Sprite(g_images.reaper);
+    g_sprites.firepower = new Sprite(g_images.firepower);
     //GameOptions
     g_sprites.gameOverIMG = new Sprite(g_images.gameOverIMG);
     g_sprites.redX = new Sprite(g_images.redX);
