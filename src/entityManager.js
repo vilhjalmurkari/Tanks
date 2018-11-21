@@ -27,7 +27,7 @@ var entityManager = {
 
 // "PRIVATE" DATA
 
-// What we have for now
+// What we have
 _floor   : [],
 _walls   : [],
 _tanks   : [],
@@ -37,12 +37,11 @@ _bombs   : [],
 _powerUp : [],
 _explosions : [],
 
-_bShowRocks : true,
-
 // "PRIVATE" METHODS
 
 _generateWalls : function(level) {
-
+//go through hardcoded arrays and set its location and size as well
+//as life, life is used as the walls id, what type of wall it is
   var brick = level;
 
   for (var i = 0; i < brick.length; i++) {
@@ -51,7 +50,11 @@ _generateWalls : function(level) {
         var wallType = brick[i][j];
         //use 9 to represent random wall
         if(wallType == 9){
-            wallType = 1 + Math.floor(Math.random()*5)
+            wallType = 1 + Math.floor(Math.random()*4)
+            //less likely to be explosive barrel
+            if(Math.random()<0.1){
+                wallType = 5;
+            }
         }
         this.generateWall({
           cx: j*g_brickwall.width + g_brickwall.startX,
@@ -68,6 +71,7 @@ _generateWalls : function(level) {
 
 },
 
+//simple function to lay the floor tiles
 _generateFloor : function() {
 
     var tile = g_floor.tiles;
@@ -122,7 +126,7 @@ init: function(level) {
     this._generateWalls(level);
     this._generateFloor();
 },
-
+//makes new bullet
 fireBullet: function(cx, cy, velX, velY, rotation, bulletType) {
     this._bullets.push(new Bullet({
         cx   : cx,
@@ -134,7 +138,7 @@ fireBullet: function(cx, cy, velX, velY, rotation, bulletType) {
         bulletType : bulletType
     }));
 },
-
+//makes new bomb
 fireBomb: function(cx, cy, velX, velY, rotation) {
     this._bombs.push(new Bomb({
         cx   : cx,
@@ -145,7 +149,7 @@ fireBomb: function(cx, cy, velX, velY, rotation) {
         rotation : rotation
     }));
 },
-
+//makes an explosion
 makeExplosion: function(cx, cy, radius) {
     this._explosions.push(new Explosion({
         cx   : cx,
@@ -155,13 +159,15 @@ makeExplosion: function(cx, cy, radius) {
         radius : radius,
     }));
 },
-
+//makes a powerup
 makePowerup: function(cx, cy) {
     this._powerUp.push(new Powerup({
         cx   : cx,
         cy   : cy,
     }));
 },
+
+//make all kinds of objects
 
 generateWall : function(descr) {
     this._walls.push(new Wall(descr));
@@ -192,7 +198,7 @@ killAll : function () {
       }
   }
 },
-
+//update all categories
 update: function(du) {
 
     for (var c = 0; c < this._categories.length; ++c) {
@@ -217,7 +223,7 @@ update: function(du) {
 
 
 },
-
+//render all categories
 render: function(ctx) {
 
     var debugX = 10, debugY = 100;

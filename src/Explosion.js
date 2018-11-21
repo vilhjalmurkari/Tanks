@@ -18,7 +18,7 @@ function Explosion(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
-    // Make a noise when I am created (i.e. fired)
+    // Make a noise when I am created 
     this.explodeSound.play();
     
 /*
@@ -34,8 +34,6 @@ Explosion.prototype = new Entity();
 // HACKED-IN AUDIO (no preloading)
 Explosion.prototype.explodeSound = new Audio(
     "../sounds/explosion.wav");
-Explosion.prototype.zappedSound = new Audio(
-    "../sounds/bulletZapped.ogg");
     
 // Initial, inheritable, default values
 Explosion.prototype.rotation = 0;
@@ -51,15 +49,17 @@ Explosion.prototype.update = function (du) {
     //unregister this entity
     spatialManager.unregister(this);
 
+    //lifespan counter
     this.lifeSpan++;
     if (this.lifeSpan > 81) return entityManager.KILL_ME_NOW;
     
     //
     // Handle explosion radius
-    //
+    // find all entities in radius when 
+    // exploion is biggest
     if(this.lifeSpan === 23){
         var hitEntities = this.findAllHitEntities();
-        
+        //make all entities in radius take hit 
         if (hitEntities) {
             for(var i = 0; i < hitEntities.length; i++){
                 var canTakeHit = hitEntities[i].takeExplosionHit;
@@ -72,7 +72,7 @@ Explosion.prototype.update = function (du) {
     //reregister
     spatialManager.register(this);
 };
-
+//reruns all entities in radius
 Entity.prototype.findAllHitEntities = function () {
     var pos = this.getPos();
     return spatialManager.findAllEntitesInRange(
@@ -93,10 +93,12 @@ Explosion.prototype.getWidth = function () {
 };
 
 Explosion.prototype.render = function (ctx) {
+    //gets right sprite from a spritemap of colums and rows
     var spriteWidth = g_sprites.explosion.width / 9;
     var spriteHeight = g_sprites.explosion.height / 9;
     var column = (this.lifeSpan % 9) - 1;
     var row = Math.floor(this.lifeSpan / 9);
+    //draw right sprite at right place
     g_sprites.explosion.customDrawWrappedCentredAt(
         ctx, this.cx, this.cy,
         this.width, this.height, this.rotation,
