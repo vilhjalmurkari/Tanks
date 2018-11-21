@@ -3,17 +3,33 @@
   <head>
     <meta charset="UTF-8">
     <title>TANKS!</title>
+    <link rel="stylesheet" href="./css/tanks.css">
   </head>
   <body>
-
-	<canvas id="myCanvas" width="600" height="600"
+  <div class="gameContainer">
+    <canvas class="game" id="myCanvas" width="600" height="600"
 		style="border: 1px solid black;">
-	Sorry, but your browser does not support the HTML5 canvas tag.
-	</canvas>
+  	  Sorry, but your browser does not support the HTML5 canvas tag.
+	  </canvas>
+  </div>
+  <div class="info">
+    <h1>Tanks</h1>
+    <h2>Computergame programing</h2>
+    <p>Karl Ágúst Bárðarson</p>
+    <p>Stefán Gunnlaugur Jónsson</p>
+    <p>Vilhjálmur Kári Jensson</p>
+    
+  </div>
+
     
     <div id="output"></div>
-
-
+    <script>
+        window.addEventListener('keydown', function(e) {
+      if(e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+      }
+    });
+    </script>
     <script src="globals.js"></script>
     <script src="consts.js"></script>
     <script src="util.js"></script>

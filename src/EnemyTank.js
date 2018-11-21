@@ -308,6 +308,8 @@ EnemyTank.prototype.getRadius = function () {
 };
 
 EnemyTank.prototype.takeBulletHit = function () {
+    console.log(numEnemies);
+    
     if(this.shield > 0){
     }
     else{
