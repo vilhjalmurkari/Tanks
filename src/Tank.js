@@ -446,14 +446,14 @@ Tank.prototype.render = function (ctx) {
     if(this.player === 1){
         for(var i = 0; i < this.lives; i++){
             this.sprite.customDrawWrappedCentredAt(
-                ctx, 30 + (i*this.width + 5), 30, this.width/2, this.height/2, 0
+                ctx, 45 + (i*this.width + 5), 15, this.width/1.5, this.height/1.5, 0
                 );
         }
     }
     else{
         for(var i = 0; i < this.lives; i++){
             this.sprite.customDrawWrappedCentredAt(
-                ctx, g_canvas.width - 30 - (i*this.width - 5), 30, this.width/2, this.height/2, 0
+                ctx, g_canvas.width - 45 - (i*this.width - 5), 15, this.width/1.5, this.height/1.5, 0
                 );
         }
     }

@@ -17,3 +17,7 @@ html{
 .info{
     color: white;
 }
+
+.mainContainer{
+    display: flex;
+}
