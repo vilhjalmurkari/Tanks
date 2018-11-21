@@ -9,6 +9,7 @@ var gameOverScreen = {
     dropSpeed : 3,
     lifeCntr  : 0,
 
+    //Pairs winner and loser with the appropriate tank sprite
     setWinner : function(loser) {
       if(loser === 3) {
           winnerSprite = g_sprites.tank1;
@@ -33,6 +34,7 @@ var gameOverScreen = {
     reset : function () {
         this.cx = g_canvas.width/2;
         this.cy = -g_canvas.height/2;
+        this.lifeCntr = 0;
     },
 
     update : function (du) {
@@ -72,6 +74,8 @@ var gameOverScreen = {
                     g_canvas.width, g_canvas.height);
       ctx.restore();
     },
+
+    //Draws loser's tank in flames
     drawLoser : function (ctx, loserCx, bothCy) {
       //Draw Loser's Tank
       loserSprite.drawCentredAt(ctx, loserCx, bothCy, 0);
@@ -99,8 +103,6 @@ function gOcheckMouseClick(x,y, btnX, btnY) {
 
   if(x > btnX - w  && x < btnX + w) {
       if(y > btnY - h  && y < btnY + h) {
-          //g_mouseXClick = 0;
-          //g_mouseYClick = 0;
           gameOverScreen.reset();
           resetMenu();
 
@@ -118,7 +120,6 @@ function gOcheckMouseHover(x, y, btnX, btnY) {
 
   if(x > btnX - w  && x < btnX + w) {
       if(y > btnY - h  && y < btnY + h) {
-          console.log("helloooo");
           hoverBtn = true;
           return;
       }

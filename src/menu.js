@@ -338,4 +338,7 @@ function resetMenu () {
   mainScreen = true;
   mapScreen = false;
   htpScreen = false;
+
+  numEnemies = 1;
+  enemylives = 3;
 }
