@@ -118,7 +118,6 @@ function gOcheckMouseHover(x, y, btnX, btnY) {
 
   if(x > btnX - w  && x < btnX + w) {
       if(y > btnY - h  && y < btnY + h) {
-          console.log("helloooo");
           hoverBtn = true;
           return;
       }

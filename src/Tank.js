@@ -211,15 +211,52 @@ Tank.prototype.moveTank = function (du) {
 };
 
 Tank.prototype.canMove = function (x, y, rad) {
-    var boxCheck = spatialManager.checkBoxCollision(
-        x, y, this.getRadius() - this.wallPadding
-    );
-    var tankCheck = spatialManager.checkTankVTankCollision(
-        x, y, this.getRadius()
-    )
-    var canIt = boxCheck || tankCheck;
+    var wrapCheck = this.checkCollisionWrapping(x, y, rad);
+    var canIt = wrapCheck;
     return !canIt;
 };
+
+Tank.prototype.checkCollisionWrapping = function (x, y, rad) {
+    var sw = g_canvas.width;
+
+    var checkMiddle = this.checkCollisionWrappingVertical(x, y, rad);
+    var checkLeft = this.checkCollisionWrappingVertical(x - sw, y, rad);
+    var checkRight = this.checkCollisionWrappingVertical(x + sw, y, rad);
+
+    return checkMiddle || checkLeft || checkRight;
+};
+
+Tank.prototype.checkCollisionWrappingVertical = function (x, y, rad) {
+    var sh = g_canvas.height;
+    //if no collision then everything retuns false
+    //if one function retuns an entity this will return said entity
+    var boxCheckMiddle = spatialManager.checkBoxCollision(
+        x, y, this.getRadius() - this.wallPadding
+    );
+    var tankCheckMiddle = spatialManager.checkTankVTankCollision(
+        x, y, this.getRadius()
+    );
+    var boxCheckTop = spatialManager.checkBoxCollision(
+        x, y + sh, this.getRadius() - this.wallPadding
+    );
+    var tankCheckTop = spatialManager.checkTankVTankCollision(
+        x, y + sh, this.getRadius()
+    );
+    var boxCheckBottom = spatialManager.checkBoxCollision(
+        x, y - sh, this.getRadius() - this.wallPadding
+    );
+    var tankCheckBottom = spatialManager.checkTankVTankCollision(
+        x, y - sh, this.getRadius()
+    );
+    
+    return (boxCheckBottom 
+           || boxCheckMiddle 
+           || boxCheckTop 
+           || tankCheckBottom 
+           || tankCheckMiddle 
+           || tankCheckTop);
+};
+
 
 Tank.prototype.checkPadding = function (x, y, rad, padding) {
     var canIt = spatialManager.checkBoxPadding(
@@ -276,7 +313,7 @@ Tank.prototype.takeBulletHit = function () {
             this.lives--;
 
             entityManager.makeExplosion(
-              this.cx, this.cy, 20);
+              this.cx, this.cy, 40);
 
             if (this.lives > 0) {
               this.currentHP = this.fullHP;
@@ -302,7 +339,7 @@ Tank.prototype.takeExplosionHit = function () {
             this.lives--;
 
             entityManager.makeExplosion(
-              this.cx, this.cy, 20);
+              this.cx, this.cy, 40);
 
             if (this.lives > 0) {
               this.currentHP = this.fullHP;

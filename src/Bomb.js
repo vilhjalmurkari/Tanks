@@ -92,7 +92,7 @@ Bomb.prototype.getRadius = function () {
 };
 
 Bomb.prototype.render = function (ctx) {
-    var scale = 1.5 + ((-Math.abs((this.lifespanLength/2) - this.lifeSpan) + (this.lifespanLength/2)) / (this.lifespanLength/2));
+    var scale = 1.5 + 1.2*((-Math.abs((this.lifespanLength/2) - this.lifeSpan) + (this.lifespanLength/2)) / (this.lifespanLength/2));
     var spriteWidth = g_sprites.bomb.width/3;
     var spriteHeight = g_sprites.bomb.height;
     var cutX = g_sprites.bomb.width/3 * this.spriteNr;
