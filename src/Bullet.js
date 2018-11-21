@@ -84,9 +84,14 @@ Bullet.prototype.update = function (du) {
 
     var hitBox = this.boxCollition();
     if (hitBox) {
-        var canTakeHit = hitBox.takeBulletHit;
-        if (canTakeHit) canTakeHit.call(hitBox); 
-        return entityManager.KILL_ME_NOW;
+        if(this.bulletType == "turretBullet" && hitBox.wallType == "turret"){
+            return entityManager.KILL_ME_NOW;
+        }
+        else{
+            var canTakeHit = hitBox.takeBulletHit;
+            if (canTakeHit) canTakeHit.call(hitBox); 
+            return entityManager.KILL_ME_NOW;
+        }
     }
     
     //reregister

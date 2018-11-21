@@ -47,6 +47,9 @@ Powerup.prototype.fullScalarVar = 60;
 Powerup.prototype.scalarVar = 60;
 
 
+
+
+
 Powerup.prototype.update = function (du) {
 
 
