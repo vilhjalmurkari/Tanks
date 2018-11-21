@@ -71,10 +71,7 @@ EnemyTank.prototype.entityAngle = 0;
 EnemyTank.prototype.angleCorrection = 0;
 EnemyTank.prototype.moveFromWall = 0;
 // HACKED-IN AUDIO (no preloading)
-/*
-EnemyTank.prototype.warpSound = new Audio(
-    "sounds/shipWarp.ogg");
-*/
+
 
 EnemyTank.prototype.warp = function () {
 
