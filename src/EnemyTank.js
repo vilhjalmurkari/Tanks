@@ -213,14 +213,50 @@ EnemyTank.prototype.moveTank = function (du) {
 };
 
 EnemyTank.prototype.canMove = function (x, y, rad) {
-    var boxCheck = spatialManager.checkBoxCollision(
+    var wrapCheck = this.checkCollisionWrapping(x, y, rad);
+    var canIt = wrapCheck;
+    return !canIt;
+};
+
+EnemyTank.prototype.checkCollisionWrapping = function (x, y, rad) {
+    var sw = g_canvas.width;
+
+    var checkMiddle = this.checkCollisionWrappingVertical(x, y, rad);
+    var checkLeft = this.checkCollisionWrappingVertical(x - sw, y, rad);
+    var checkRight = this.checkCollisionWrappingVertical(x + sw, y, rad);
+
+    return checkMiddle || checkLeft || checkRight;
+};
+
+EnemyTank.prototype.checkCollisionWrappingVertical = function (x, y, rad) {
+    var sh = g_canvas.height;
+    //if no collision then everything retuns false
+    //if one function retuns an entity this will return said entity
+    var boxCheckMiddle = spatialManager.checkBoxCollision(
         x, y, this.getRadius() - this.wallPadding
     );
-    var tankCheck = spatialManager.checkTankVTankCollision(
+    var tankCheckMiddle = spatialManager.checkTankVTankCollision(
         x, y, this.getRadius()
-    )
-    var canIt = boxCheck || tankCheck;
-    return !canIt;
+    );
+    var boxCheckTop = spatialManager.checkBoxCollision(
+        x, y + sh, this.getRadius() - this.wallPadding
+    );
+    var tankCheckTop = spatialManager.checkTankVTankCollision(
+        x, y + sh, this.getRadius()
+    );
+    var boxCheckBottom = spatialManager.checkBoxCollision(
+        x, y - sh, this.getRadius() - this.wallPadding
+    );
+    var tankCheckBottom = spatialManager.checkTankVTankCollision(
+        x, y - sh, this.getRadius()
+    );
+    
+    return (boxCheckBottom 
+           || boxCheckMiddle 
+           || boxCheckTop 
+           || tankCheckBottom 
+           || tankCheckMiddle 
+           || tankCheckTop);
 };
 
 EnemyTank.prototype.checkPadding = function (x, y, rad, padding) {
@@ -302,7 +338,7 @@ EnemyTank.prototype.takeBulletHit = function () {
                     numEnemies = 4 - enemylives;
                 }
                 entityManager.makeExplosion(
-                  this.cx, this.cy, 20);
+                  this.cx, this.cy, 40);
 
                 if (enemylives > 0) {
                     this._isDeadNow = true;
@@ -346,7 +382,7 @@ EnemyTank.prototype.takeExplosionHit = function () {
                     numEnemies = 4 - enemylives;
                 }
                 entityManager.makeExplosion(
-                  this.cx, this.cy, 20);
+                  this.cx, this.cy, 40);
 
                 if (enemylives > 0) {
                     this._isDeadNow = true;
