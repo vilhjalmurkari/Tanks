@@ -82,12 +82,16 @@ Bullet.prototype.update = function (du) {
         return entityManager.KILL_ME_NOW;
     }
 
+    //check if bullet hits wall
     var hitBox = this.boxCollition();
     if (hitBox) {
+        //if bullet from turret shoots another turret nothing happens to turret
+        //for turrets friendly fire is off
         if(this.bulletType == "turretBullet" && hitBox.wallType == "turret"){
             return entityManager.KILL_ME_NOW;
         }
         else{
+            //turret not shooting turret
             var canTakeHit = hitBox.takeBulletHit;
             if (canTakeHit) canTakeHit.call(hitBox); 
             return entityManager.KILL_ME_NOW;
@@ -97,7 +101,7 @@ Bullet.prototype.update = function (du) {
     //reregister
     spatialManager.register(this);
 };
-
+//function to check for bullet collition with wall
 Entity.prototype.boxCollition = function () {
     var pos = this.getPos();
     return spatialManager.checkBoxCollision(
@@ -116,10 +120,12 @@ Bullet.prototype.takeBulletHit = function () {
     this.zappedSound.play();
 };
 
+//bullet survives explosion
 Bullet.prototype.takeExplosionHit = function () {
 
 };
 
+//standard bullet render function
 Bullet.prototype.render = function (ctx) {
 
     var fadeThresh = Bullet.prototype.lifeSpan / 3;
