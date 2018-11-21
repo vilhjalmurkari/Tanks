@@ -43,7 +43,7 @@ _bShowRocks : true,
 
 _generateWalls : function(level) {
 
-  var brick = g_brickwall.wall//level;
+  var brick = level;
 
   for (var i = 0; i < brick.length; i++) {
     for (var j = 0; j < brick[i].length; j++) {
