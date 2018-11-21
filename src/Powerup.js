@@ -46,9 +46,6 @@ Powerup.prototype.radius = this.width/2;
 Powerup.prototype.fullScalarVar = 60;
 Powerup.prototype.scalarVar = 60;
 
-Powerup.prototype.getPowerup = new Audio(
-    "sounds/shipWarp.ogg");
-
 
 Powerup.prototype.update = function (du) {
 

@@ -65,10 +65,7 @@ Tank.prototype.fireRate = 0;
 Tank.prototype.orginalFireSpeed = 20;
 Tank.prototype.fireSpeed = 20;
 // HACKED-IN AUDIO (no preloading)
-/*
-Tank.prototype.warpSound = new Audio(
-    "sounds/shipWarp.ogg");
-*/
+
 
 Tank.prototype.warp = function () {
 
