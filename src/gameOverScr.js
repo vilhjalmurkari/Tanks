@@ -2,6 +2,7 @@
 var winnerSprite;
 var loserSprite;
 var hoverBtn = false;
+var burningAudio = new Audio("../sounds/fire6.mp3");
 
 var gameOverScreen = {
     cx : cx = g_canvas.width/2,
@@ -38,7 +39,16 @@ var gameOverScreen = {
     },
 
     update : function (du) {
+        //Fade out the music
+        if(gameMusic.volume < 0.01){
+          gameMusic.pause();
+        }
+        else{
+          gameMusic.volume -= 0.001;
+        }
+
         this.lifeCntr += 0.1;
+
         if(this.cy < g_canvas.height/2) this.cy += this.dropSpeed;
 
         gOcheckMouseHover(g_mouseX, g_mouseY, this.cx, this.cy);
@@ -105,6 +115,8 @@ function gOcheckMouseClick(x,y, btnX, btnY) {
       if(y > btnY - h  && y < btnY + h) {
           gameOverScreen.reset();
           resetMenu();
+          restartMusic();
+          burningAudio.pause();
 
           isGameOver = false;
 
@@ -125,4 +137,9 @@ function gOcheckMouseHover(x, y, btnX, btnY) {
       }
   }
   hoverBtn = false;
+}
+
+function playBurningAudio () {
+    burningAudio.loop = true;
+    burningAudio.play();
 }

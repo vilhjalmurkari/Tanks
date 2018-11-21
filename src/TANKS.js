@@ -140,6 +140,13 @@ function gameOver (loser) {
     gameOverScreen.setWinner(loser);
     entityManager.killAll();
     isGameOver = true;
+    playBurningAudio();
+}
+
+function restartMusic () {
+  gameMusic.currentTime = 0.0;
+  gameMusic.volume = 1.0;
+  gameMusic.play();
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
