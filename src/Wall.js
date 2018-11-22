@@ -40,20 +40,20 @@ var g_brickwall = {
         [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
         [9,0,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,0,9],
         [9,0,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,0,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,6,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,6,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,6,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,6,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
-        [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,4,4,4,4,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,6,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,6,9,9,9,0,0,0,0,9,9,9,9,9,6,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,4,4,4,4,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,6,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
+        [9,9,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,9,9],
         [9,0,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,0,9],
         [9,0,0,9,9,9,9,0,0,0,0,9,9,9,9,9,9,0,0,9],
         [9,9,9,9,9,9,9,0,0,0,0,9,9,9,9,9,9,9,9,9],
@@ -193,6 +193,16 @@ function Wall(descr) {
     this.width = 30;
     this.radius = this.height/2;
     this.turretfire = 100;
+    this.currentHP = 40;
+    this.fullHP = 40;
+    this.rotation = 0;
+    this.shoot1 = true;
+    this.shoot2 = true;
+    this.shoot3 = true;
+    this.shoot4 = true;
+    if(this.life === 6){
+        this.wallType = "turret";
+    }
 
 };
 
@@ -229,9 +239,25 @@ Wall.prototype.update = function (du) {
     }
 
     if(this.life === 6){
-        if(this.turretfire == 0){
-            this.fireTurret();
-            this.turretfire = 100;
+        this.rotation += Math.PI/100;
+        if(this.rotation > Math.PI*2){
+            this.fireTurret(4);
+            this.rotation = 0;
+            this.shoot1 = true;
+            this.shoot2 = true;
+            this.shoot3 = true;
+        }
+        else if(this.rotation > 3*(Math.PI/2) && this.shoot3){
+            this.shoot3 = false;
+            this.fireTurret(2);
+        }
+        else if(this.rotation > Math.PI && this.shoot2){
+            this.shoot2 = false;
+            this.fireTurret(3);
+        }
+        else if(this.rotation > Math.PI/2 && this.shoot1){
+            this.shoot1 = false;
+            this.fireTurret(1);
         }
         this.turretfire--;
     }
@@ -251,14 +277,24 @@ Wall.prototype.takeBulletHit = function () {
             }
         }
     }
-    if(this.life === 5){
+    else if(this.life === 5){
         entityManager.makeExplosion(
             this.cx + (this.width/2), this.cy + (this.height/2), 40);
         this.life = 0;
         this._isDeadNow = true;
     }
-    if(this.life === 4 && this.life === 6){
+    else if(this.life === 4){
         this.thump.play();
+    }
+    else if(this.life === 6){
+        this.thump.play();
+        this.currentHP -= 10;
+        if(this.currentHP <= 0){
+            entityManager.makeExplosion(
+                this.cx + (this.width/2), this.cy + (this.height/2), 40);
+            this.life = 0;
+            this._isDeadNow = true;
+        }
     }
 };
 
@@ -267,50 +303,85 @@ Wall.prototype.takeExplosionHit = function () {
         this.life--;
         this.woodBreaking.play();
     }
-    if(this.life === 5){
+    else if(this.life === 5){
         entityManager.makeExplosion(
             this.cx + (this.width/2), this.cy + (this.height/2), 40);
         this.life = 0;
         this._isDeadNow = true;
     }
-    if(this.life === 4 && this.life === 6){
+    else if(this.life === 4){
         this.thump.play();
+    }
+    else if(this.life === 6){
+        this.thump.play();
+        this.currentHP -= 20;
+        if(this.currentHP <= 0){
+            entityManager.makeExplosion(
+                this.cx + (this.width/2), this.cy + (this.height/2), 40);
+            this.life = 0;
+            this._isDeadNow = true;
+        }
     }
 };
 
 
 
-Wall.prototype.fireTurret = function() {
+Wall.prototype.fireTurret = function(direction) {
     var launchDist = 25;
     var xCenter = this.cx + this.width/2;
     var yCenter = this.cy + this.height/2;
-    entityManager.fireBullet(
-        xCenter + launchDist, yCenter,
-        2, 0,
-        0);
-
-    entityManager.fireBullet(
-        xCenter - launchDist, yCenter,
-        -2, 0,
-        0);
-
-    entityManager.fireBullet(
-        xCenter, yCenter + launchDist,
-        0, 2,
-        0);
-
-    entityManager.fireBullet(
-        xCenter, yCenter - launchDist,
-        0, -2,
-        0);
-
+    if(direction === 1){
+        entityManager.fireBullet(
+            xCenter + launchDist, yCenter,
+            2, 0,
+            0,
+            "turretBullet");
+    }
+    else if(direction === 2){
+        entityManager.fireBullet(
+            xCenter - launchDist, yCenter,
+            -2, 0,
+            0,
+            "turretBullet");
+    }
+    else if(direction === 3){
+        entityManager.fireBullet(
+            xCenter, yCenter + launchDist,
+            0, 2,
+            0,
+            "turretBullet");
+    }
+    else if(direction === 4){
+        entityManager.fireBullet(
+            xCenter, yCenter - launchDist,
+            0, -2,
+            0,
+            "turretBullet");
+    }
 }
 
 Wall.prototype.render = function (ctx) {
 
-    if(this.life > 0){
+    if(this.life > 0 && this.life !== 6){
         this.sprite[this.life].drawCustomImgAt(
             ctx, this.cx, this.cy, this.width, this.height
             );
+    }
+    if(this.life === 6){
+        
+        this.sprite[this.life].drawCustomImgAt2(
+            ctx, this.cx, this.cy, this.width, this.height, this.rotation
+            );
+        //hp bar
+        var barHeight = 5;
+        var barWidth = this.width;
+        util.fillBox(ctx, this.cx , this.cy - (this.height/2) - 10,
+            barWidth, barHeight,
+            "Red");
+        if(this.currentHP > 0){
+            util.fillBox(ctx, this.cx, this.cy - (this.height/2) - 10,
+            barWidth * (this.currentHP/this.fullHP), barHeight,
+            "Green");
+        }
     }
 };

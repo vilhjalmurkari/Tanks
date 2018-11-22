@@ -78,8 +78,8 @@ main.gameOver = function () {
 };
 
 // Simple voluntary quit mechanism
-//
-var KEY_QUIT = 'Q'.charCodeAt(0);
+// esc key
+var KEY_QUIT = 27;
 function requestedQuit() {
     return keys[KEY_QUIT];
 }
