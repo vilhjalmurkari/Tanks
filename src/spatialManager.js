@@ -75,18 +75,18 @@ findNearestTank: function(posX, posY) {
     var nearestTank = false;
     var nearestTankDist = Infinity;
     for (var ID in this._entities) {
-        if(this._entities[ID].entity.type == "Tank"){         
+        if(this._entities[ID].entity.type == "Tank"){
             var e = this._entities[ID];
             var xdist = posX - e.posX;
             var ydist = posY - e.posY;
-    
+
             var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-    
+
             if (distance < nearestTankDist) {
             nearestTank = e.entity;
             nearestTankDist = distance
             }
-        
+
         }
     }
     return {tank: nearestTank, dist: nearestTankDist};
@@ -98,18 +98,18 @@ findNearestPowerup: function(posX, posY) {
     var nearestPowerup = false;
     var nearestPowerupDist = Infinity;
     for (var ID in this._entities) {
-        if(this._entities[ID].entity.type == "Powerup"){         
+        if(this._entities[ID].entity.type == "Powerup"){
             var e = this._entities[ID];
             var xdist = posX - e.posX;
             var ydist = posY - e.posY;
-    
+
             var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-    
+
             if (distance < nearestPowerupDist) {
             nearestPowerup = e.entity;
             nearestPowerupDist = distance
             }
-        
+
         }
     }
     return {powerup: nearestPowerup, dist: nearestPowerupDist};
@@ -118,20 +118,20 @@ findNearestPowerup: function(posX, posY) {
 
 findEntityInRange: function(posX, posY, radius) {
 
-    
+
     for (var ID in this._entities) {
         var e = this._entities[ID];
         if(e.radius){
             var xdist = posX - e.posX;
             var ydist = posY - e.posY;
-    
+
             var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-    
+
             if (distance < radius + e.radius) {
               return e.entity;
             }
         }
-        
+
     }
 
 },
@@ -145,9 +145,9 @@ findAllEntitesInRange: function(posX, posY, radius) {
         if(e.radius){
             var xdist = posX - e.posX;
             var ydist = posY - e.posY;
-    
+
             var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-            
+
             if (distance < radius + e.radius) {
               entities.push( e.entity);
             }
@@ -164,9 +164,9 @@ findAllEntitesInRange: function(posX, posY, radius) {
                 h: this._entities[ID].entity.height,
                 w: this._entities[ID].entity.width
             }
-    
+
             var cX, cY;
-    
+
             //Find closest x offset
             if( a.x < b.x )
             {
@@ -180,9 +180,9 @@ findAllEntitesInRange: function(posX, posY, radius) {
             {
                 cX = a.x;
             }
-    
+
             //Find closest y offset
-            
+
             if( a.y < b.y )
             {
                 cY = b.y;
@@ -195,7 +195,7 @@ findAllEntitesInRange: function(posX, posY, radius) {
             {
                 cY = a.y;
             }
-    
+
             //If the closest point is inside the circle
             if( util.distSq( a.x, a.y, cX, cY ) < a.r * a.r )
             {
@@ -210,41 +210,41 @@ findAllEntitesInRange: function(posX, posY, radius) {
 
 findPowerupInRange: function(posX, posY, radius) {
 
-    
+
     for (var ID in this._entities) {
         if(this._entities[ID].entity.type == "Powerup"){
             var e = this._entities[ID];
             if(e.radius){
                 var xdist = posX - e.posX;
                 var ydist = posY - e.posY;
-        
+
                 var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-        
+
                 if (distance < radius + e.radius) {
                 return e.entity;
                 }
             }
-            
+
         }
     }
 },
 
 checkTankVTankCollision: function(posX, posY, radius) {
-    
+
     for (var ID in this._entities) {
         if(this._entities[ID].entity.type == "EnemyTank" || this._entities[ID].entity.type == "Tank"){
             var e = this._entities[ID];
             if(e.radius){
                 var xdist = posX - e.posX;
                 var ydist = posY - e.posY;
-        
+
                 var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
-        
+
                 if (distance < radius + e.radius) {
                 return e.entity;
                 }
             }
-                    
+
         }
     }
     return false;
@@ -283,7 +283,7 @@ checkBoxCollision: function(posX, posY, radius) {
         }
 
         //Find closest y offset
-        
+
         if( a.y < b.y )
         {
             cY = b.y;
@@ -300,15 +300,72 @@ checkBoxCollision: function(posX, posY, radius) {
         //If the closest point is inside the circle
         if( util.distSq( a.x, a.y, cX, cY ) < a.r * a.r )
         {
-            //This box and the circle have collided
+
             return this._entities[ID].entity;
         }
-    
+
         //If the shapes have not collided
-        
+
         }
     }
     return false;
+},
+
+checkWhereOnBox: function(x, y, r, entity) {
+
+      var b = {
+          x: entity.cx,
+          y: entity.cy,
+          h: entity.height,
+          w: entity.width
+      }
+
+      var cX, cY;
+
+      //Find closest x offset
+      if( x < b.x )
+      {
+          cX = b.x;
+      }
+      else if( x > b.x + b.w )
+      {
+          cX = b.x + b.w;
+      }
+      else
+      {
+          cX = x;
+      }
+
+      //Find closest y offset
+
+      if( y < b.y )
+      {
+          cY = b.y;
+      }
+      else if( y > b.y + b.h )
+      {
+          cY = b.y + b.h;
+      }
+      else
+      {
+          cY = y;
+      }
+
+      //This box and the circle have collided
+      var whereOnBox = 0;
+
+      if ( x < cX || x  > cX) {
+        console.log("left/right collision");
+        whereOnBox = -1;
+      }
+
+      if ( y < cY || y > cY) {
+        console.log("top/bottom collision");
+        whereOnBox = 1;
+      }
+
+  return whereOnBox;
+
 },
 
 checkBoxPadding: function(posX, posY, radius, padding) {
@@ -344,7 +401,7 @@ checkBoxPadding: function(posX, posY, radius, padding) {
         }
 
         //Find closest y offset
-        
+
         if( a.y < b.y )
         {
             cY = b.y;
@@ -364,9 +421,9 @@ checkBoxPadding: function(posX, posY, radius, padding) {
             //This box and the circle have collided
             return this._entities[ID].entity;
         }
-    
+
         //If the shapes have not collided
-        
+
         }
     }
     return false;

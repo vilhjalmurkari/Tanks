@@ -191,17 +191,42 @@ Tank.prototype.moveTank = function (du) {
         var deltaX = +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
         var deltaY = -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
 
-        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
+        var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
+
+        if(!test){
             this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
+        } else {
+          /*
+            var whereOnBox = spatialManager.checkWhereOnBox(this.cx + deltaX, this.cy + deltaY, this.getRadius(), test);
+            if (whereOnBox === -1) {
+              this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
+            }
+            if (whereOnBox === 1) {
+              this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+            }
+            */
         }
     }
     if (keys[this.KEY_BACKWARDS]) {
         var deltaX = +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
         var deltaY = -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
-        if(this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius())){
+
+        var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
+
+        if(!test){
             this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
+        } else {
+          /*
+          var whereOnBox = spatialManager.checkWhereOnBox(this.cx + deltaX, this.cy + deltaY, this.getRadius(), test);
+          if (whereOnBox === -1) {
+            this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
+          }
+          if (whereOnBox === 1) {
+            this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
+          }
+          */
         }
     }
 
@@ -209,8 +234,11 @@ Tank.prototype.moveTank = function (du) {
 
 Tank.prototype.canMove = function (x, y, rad) {
     var wrapCheck = this.checkCollisionWrapping(x, y, rad);
+    return wrapCheck;
+    /*
     var canIt = wrapCheck;
     return !canIt;
+    */
 };
 
 Tank.prototype.checkCollisionWrapping = function (x, y, rad) {
@@ -245,12 +273,12 @@ Tank.prototype.checkCollisionWrappingVertical = function (x, y, rad) {
     var tankCheckBottom = spatialManager.checkTankVTankCollision(
         x, y - sh, this.getRadius()
     );
-    
-    return (boxCheckBottom 
-           || boxCheckMiddle 
-           || boxCheckTop 
-           || tankCheckBottom 
-           || tankCheckMiddle 
+
+    return (boxCheckBottom
+           || boxCheckMiddle
+           || boxCheckTop
+           || tankCheckBottom
+           || tankCheckMiddle
            || tankCheckTop);
 };
 
