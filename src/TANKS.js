@@ -48,6 +48,7 @@ var g_ctx = g_canvas.getContext("2d");
 
 function createInitialTanks(twoPlayer) {
     //alwas generate player 1
+    /*
     entityManager.generateTank({
         cx : 60,
         cy : 540,
@@ -95,7 +96,7 @@ function createInitialTanks(twoPlayer) {
             randomLoc: false,
         });
     }
-
+*/
 }
 
 // =============
