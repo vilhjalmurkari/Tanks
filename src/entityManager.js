@@ -74,10 +74,9 @@ _generateWalls : function(level) {
 //simple function to lay the floor tiles
 _generateFloor : function() {
 
-    var tile = g_floor.tiles;
-
-    for (var i = 0; i < tile.length; i++) {
-      for (var j = 0; j < tile[i].length; j++) {
+    //for length and height of floor generate tile
+    for (var i = 0; i < g_floor.tileLength; i++) {
+      for (var j = 0; j < g_floor.tileHeight; j++) {
 
           this.generateFloor({
             cx: j*g_floor.width + g_floor.startX,

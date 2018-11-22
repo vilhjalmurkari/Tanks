@@ -278,15 +278,6 @@ Tank.prototype.checkCollisionWrappingVertical = function (x, y, rad) {
            || tankCheckTop);
 };
 
-
-Tank.prototype.checkPadding = function (x, y, rad, padding) {
-    var canIt = spatialManager.checkBoxPadding(
-        x, y, this.getRadius(), padding
-    );
-
-    return !canIt;
-};
-
 Tank.prototype.maybeFireBullet = function () {
 
     if (this.fireRate >= this.fireSpeed && eatKey(this.KEY_FIRE)) {

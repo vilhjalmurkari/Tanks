@@ -47,19 +47,21 @@ var g_ctx = g_canvas.getContext("2d");
 // ====================
 
 function createInitialTanks(twoPlayer) {
-
+    //alwas generate player 1
     entityManager.generateTank({
         cx : 60,
         cy : 540,
-        KEY_FORWARD : 'W'.charCodeAt(0),
-        KEY_BACKWARDS  : 'S'.charCodeAt(0),
-        KEY_LEFT   : 'A'.charCodeAt(0),
-        KEY_RIGHT  : 'D'.charCodeAt(0),
+        //arrow keys
+        KEY_FORWARD : 38,
+        KEY_BACKWARDS  : 40,
+        KEY_LEFT   : 37,
+        KEY_RIGHT  : 39,
         KEY_FIRE   : ' '.charCodeAt(0),
         sprite : g_sprites.tank1,
         player : 1
     });
-
+    //if 2 player is selected generate another tank and a enemytank
+    //at random location
     if(twoPlayer){
         entityManager.generateEnemyTank({
             cx : 270,
@@ -68,7 +70,22 @@ function createInitialTanks(twoPlayer) {
             player : 3,
             randomLoc: true,
         });
+
+        entityManager.generateTank({
+            cx : 540,
+            cy : 60,
+            //WDSA keys
+            KEY_FORWARD : 'W'.charCodeAt(0),
+            KEY_BACKWARDS  : 'S'.charCodeAt(0),
+            KEY_LEFT   : 'A'.charCodeAt(0),
+            KEY_RIGHT  : 'D'.charCodeAt(0),
+            //1 key
+            KEY_FIRE   : 49,
+            sprite : g_sprites.tank2,
+            player : 2
+          });
     }
+    //one player is selected so we make an enemy at a specific place
     else{
         entityManager.generateEnemyTank({
             cx : 540,
@@ -77,21 +94,6 @@ function createInitialTanks(twoPlayer) {
             player : 3,
             randomLoc: false,
         });
-    }
-
-
-    if (twoPlayer) {
-      entityManager.generateTank({
-        cx : 540,
-        cy : 60,
-        KEY_FORWARD : 38,
-        KEY_BACKWARDS  : 40,
-        KEY_LEFT   : 37,
-        KEY_RIGHT  : 39,
-        KEY_FIRE   : 13,
-        sprite : g_sprites.tank2,
-        player : 2
-      });
     }
 
 }
@@ -136,6 +138,7 @@ function updateSimulation(du) {
 var screen;
 var isGameOver = false;
 
+//when you either win or lose
 function gameOver (loser) {
     gameOverScreen.setWinner(loser);
     entityManager.killAll();
@@ -285,8 +288,6 @@ function preloadDone() {
     g_sprites.unknown = new Sprite(g_images.unknown);
     g_sprites.tankstext = new Sprite(g_images.tankstext);
     g_sprites.fire = new Sprite(g_images.fire);
-
-    //gameMusic.play();
 
     main.init();
 }

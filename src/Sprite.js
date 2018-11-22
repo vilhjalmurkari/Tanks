@@ -26,7 +26,7 @@ Sprite.prototype.drawAt = function (ctx, x, y) {
     ctx.drawImage(this.image, 
                   x, y);
 };
-
+//so we can controll the height and width of a img at a specific location
 Sprite.prototype.drawCustomImgAt = function (ctx, x, y, width, height, rotation) {
     if (rotation === undefined) rotation = 0;
 
@@ -44,6 +44,7 @@ Sprite.prototype.drawCustomImgAt = function (ctx, x, y, width, height, rotation)
 
 };
 
+//so we can rotate it as well
 Sprite.prototype.drawCustomImgAt2 = function (ctx, cx, cy,width, height, rotation) {
     if (rotation === undefined) rotation = 0;
 
@@ -105,12 +106,12 @@ Sprite.prototype.drawWrappedVerticalCentredAt = function (ctx, cx, cy, rotation)
     this.drawCentredAt(ctx, cx, cy + sh, rotation);
 };
 
+//our own function to be able to set size and locationa as well as cut a sertain part of a sprite map
 Sprite.prototype.customDrawCentredAt = function (ctx, cx, cy, width, height, rotation, cutX, cutY, cutWidth, cutHeight) {
     
     if (rotation === undefined) rotation = 0;
+    //if no specific area from image is cut out
     if(cutX === undefined){
-        var w = this.width,
-        h = this.height;
 
         ctx.save();
         ctx.translate(cx, cy);
@@ -124,9 +125,8 @@ Sprite.prototype.customDrawCentredAt = function (ctx, cx, cy, width, height, rot
         
         ctx.restore();
     }
+    //using spritemap, I want a sertain section of a image
     else{
-        var w = this.width,
-        h = this.height;
 
         ctx.save();
         ctx.translate(cx, cy);
@@ -144,6 +144,7 @@ Sprite.prototype.customDrawCentredAt = function (ctx, cx, cy, width, height, rot
     }
 };
 
+//same old wrapped drawing method but more variables passed through
 Sprite.prototype.customDrawWrappedCentredAt = function (ctx, cx, cy, width, height, rotation, cutX, cutY, cutWidth, cutHeight) {
     // Get "screen width"
     var sw = g_canvas.width;
@@ -156,6 +157,7 @@ Sprite.prototype.customDrawWrappedCentredAt = function (ctx, cx, cy, width, heig
     this.customDrawWrappedVerticalCentredAt(ctx, cx + sw, cy, width, height, rotation, cutX, cutY, cutWidth, cutHeight);
 };
 
+//same old wrapped drawing method but more variables passed through
 Sprite.prototype.customDrawWrappedVerticalCentredAt = function (ctx, cx, cy, width, height, rotation, cutX, cutY, cutWidth, cutHeight) {
     // Get "screen height"
     var sh = g_canvas.height;

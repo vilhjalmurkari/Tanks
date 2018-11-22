@@ -70,10 +70,15 @@ unregister: function(entity) {
 
 },
 
+//returns only nearest tank, used by AI in enemytank
+//to adjust its angle, it also retuns the distance to
+//said tank
 findNearestTank: function(posX, posY) {
-
+    //if there is no nearest tank
     var nearestTank = false;
     var nearestTankDist = Infinity;
+
+    //find nearest tank and return it as well as distance
     for (var ID in this._entities) {
         if(this._entities[ID].entity.type == "Tank"){
             var e = this._entities[ID];
@@ -93,6 +98,7 @@ findNearestTank: function(posX, posY) {
 
 },
 
+//same as for findNearestTank but for powerup
 findNearestPowerup: function(posX, posY) {
 
     var nearestPowerup = false;
@@ -116,6 +122,7 @@ findNearestPowerup: function(posX, posY) {
 
 },
 
+//return entity in radius range
 findEntityInRange: function(posX, posY, radius) {
 
 
@@ -135,23 +142,28 @@ findEntityInRange: function(posX, posY, radius) {
     }
 
 },
-
+//returns a list of all entitys in radius range
+//used by explosions to make every entity in range 
+//take damage
 findAllEntitesInRange: function(posX, posY, radius) {
 
     var entities = [];
     for (var ID in this._entities) {
         var e = this._entities[ID];
-        //console.log(e);
+        //if entity has radius, i.e. hitbox is a circle 
+        //most entities
         if(e.radius){
             var xdist = posX - e.posX;
             var ydist = posY - e.posY;
 
             var distance = Math.sqrt(Math.pow(xdist,2) + Math.pow(ydist,2));
 
+            //if inside radius push to array
             if (distance < radius + e.radius) {
               entities.push( e.entity);
             }
         }
+        //if entity hitbox is a rectangle, i.e. walls
         else{
             var a = {
                 x: posX,
@@ -199,7 +211,7 @@ findAllEntitesInRange: function(posX, posY, radius) {
             //If the closest point is inside the circle
             if( util.distSq( a.x, a.y, cX, cY ) < a.r * a.r )
             {
-                //This box and the circle have collided
+                //This box and the radius have collided push to array
                 entities.push(this._entities[ID].entity);
             }
         }
@@ -229,10 +241,13 @@ findPowerupInRange: function(posX, posY, radius) {
     }
 },
 
+//tanks cant overlap, check only for tank collition 
+//standard circle v circle collition
 checkTankVTankCollision: function(posX, posY, radius) {
 
     for (var ID in this._entities) {
-        if(this._entities[ID].entity.type == "EnemyTank" || this._entities[ID].entity.type == "Tank"){
+        if(this._entities[ID].entity.type == "EnemyTank" 
+        || this._entities[ID].entity.type == "Tank"){
             var e = this._entities[ID];
             if(e.radius){
                 var xdist = posX - e.posX;
@@ -250,6 +265,9 @@ checkTankVTankCollision: function(posX, posY, radius) {
     return false;
 },
 
+//checking wall v tank i.e. rectangle v circle collition
+//basically: find nearest point on box to the circle and 
+//check if it overlaps with circle radius
 checkBoxCollision: function(posX, posY, radius) {
     for (var ID in this._entities) {
         if(this._entities[ID].entity.type == "Wall" && this._entities[ID].entity.life > 1){
@@ -311,6 +329,8 @@ checkBoxCollision: function(posX, posY, radius) {
     return false;
 },
 
+//used to slide along the walls, find what axis 
+//tank v wall collition is on (not used)
 checkWhereOnBox: function(x, y, r, entity) {
 
       var b = {
@@ -368,67 +388,7 @@ checkWhereOnBox: function(x, y, r, entity) {
 
 },
 
-checkBoxPadding: function(posX, posY, radius, padding) {
-    for (var ID in this._entities) {
-        if(this._entities[ID].entity.type == "Wall" && this._entities[ID].entity.life > 1){
-             //Closest point on collision box
-        var a = {
-            x: posX,
-            y: posY,
-            r: radius
-        }
-        var b = {
-            x: this._entities[ID].posX,
-            y: this._entities[ID].posY,
-            h: this._entities[ID].entity.height,
-            w: this._entities[ID].entity.width
-        }
-
-        var cX, cY;
-
-        //Find closest x offset
-        if( a.x < b.x )
-        {
-            cX = b.x;
-        }
-        else if( a.x > b.x + b.w )
-        {
-            cX = b.x + b.w;
-        }
-        else
-        {
-            cX = a.x;
-        }
-
-        //Find closest y offset
-
-        if( a.y < b.y )
-        {
-            cY = b.y;
-        }
-        else if( a.y > b.y + b.h )
-        {
-            cY = b.y + b.h;
-        }
-        else
-        {
-            cY = a.y;
-        }
-
-        //If the closest point is inside the circle
-        if( util.distSq( a.x, a.y, cX, cY ) < (a.r+padding/2) * (a.r+padding/2))// && util.distSq( a.x, a.y, cX, cY ) > (a.r-padding) * (a.r-padding) )
-        {
-            //This box and the circle have collided
-            return this._entities[ID].entity;
-        }
-
-        //If the shapes have not collided
-
-        }
-    }
-    return false;
-},
-
+//red outline if x is pressed
 render: function(ctx) {
     var oldStyle = ctx.strokeStyle;
     ctx.strokeStyle = "red";

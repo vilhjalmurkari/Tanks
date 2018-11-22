@@ -443,6 +443,7 @@ EnemyTank.prototype.respawn = function () {
     while (!this.canMove(this.cx, this.cy, this.radius)) {
         this.cx += 30;
         this.cy +=30;
+        //if outside of canvas get inside
         if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy >600){
             //Available space on the x-axis
             var availableX = g_canvas.width - this.respawnMinDist*2;
@@ -477,6 +478,7 @@ EnemyTank.prototype.spawn = function () {
     while (!this.canMove(this.cx, this.cy, this.radius)) {
       this.cx += 30;
       this.cy +=30;
+      //if outside of canvas get inside
       if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy >600){
             availableX = g_canvas.width - this.respawnMinDist*2;
             availableY = g_canvas.height - this.respawnMinDist*2;
