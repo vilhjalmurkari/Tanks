@@ -143,8 +143,8 @@ Tank.prototype.handleShieldPowerup = function () {
 };
 
 Tank.prototype.handleSpeedPowerup = function () {
-    if(this.extraSpeed < 1.8){
-        this.extraSpeed += 0.1;
+    if(this.extraSpeed < 2){
+        this.extraSpeed += 0.2;
     }
 };
 
@@ -193,7 +193,7 @@ Tank.prototype.moveTank = function (du) {
 
         var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
 
-        if(!test){
+        if(test){
             this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
         } else {
@@ -214,7 +214,7 @@ Tank.prototype.moveTank = function (du) {
 
         var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
 
-        if(!test){
+        if(test){
             this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
         } else {
@@ -234,11 +234,7 @@ Tank.prototype.moveTank = function (du) {
 
 Tank.prototype.canMove = function (x, y, rad) {
     var wrapCheck = this.checkCollisionWrapping(x, y, rad);
-    return wrapCheck;
-    /*
-    var canIt = wrapCheck;
-    return !canIt;
-    */
+    return !wrapCheck;
 };
 
 Tank.prototype.checkCollisionWrapping = function (x, y, rad) {

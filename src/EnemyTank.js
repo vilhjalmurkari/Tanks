@@ -153,7 +153,7 @@ EnemyTank.prototype.handleShieldPowerup = function () {
 //speed powerup, if tank not at max speed increase speed
 EnemyTank.prototype.handleSpeedPowerup = function () {
     if(this.extraSpeed < 1.8){
-        this.extraSpeed += 0.1;
+        this.extraSpeed += 0.2;
     }
 };
 //reaper powerup, for enemyTanks this gives them full health
@@ -218,8 +218,7 @@ EnemyTank.prototype.moveTank = function (du) {
 //checks for obsticles for main tank and also for 8 other wrapped tanks
 EnemyTank.prototype.canMove = function (x, y, rad) {
     var wrapCheck = this.checkCollisionWrapping(x, y, rad);
-    var canIt = wrapCheck;
-    return !canIt;
+    return !wrapCheck;
 };
 
 EnemyTank.prototype.checkCollisionWrapping = function (x, y, rad) {
@@ -442,9 +441,19 @@ EnemyTank.prototype.respawn = function () {
 
     //Adjust new position if the EnemyTank lands on a box
     while (!this.canMove(this.cx, this.cy, this.radius)) {
-      this.cx += 30;
-      this.cy +=30;
-      this.wrapPosition();
+        this.cx += 30;
+        this.cy +=30;
+        if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy >600){
+            //Available space on the x-axis
+            var availableX = g_canvas.width - this.respawnMinDist*2;
+            //Available space on the y-axis
+            var availableY = g_canvas.height - this.respawnMinDist*2;
+            var distCX = this.cx + this.respawnMinDist;
+            var distCY = this.cy + this.respawnMinDist;
+            this.cx = util.randRange(distCX, distCX + availableX);
+            this.cy = util.randRange(distCY, distCY + availableY);
+        }
+        this.wrapPosition();
     }
 
 }
@@ -468,6 +477,17 @@ EnemyTank.prototype.spawn = function () {
     while (!this.canMove(this.cx, this.cy, this.radius)) {
       this.cx += 30;
       this.cy +=30;
+      if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy >600){
+            availableX = g_canvas.width - this.respawnMinDist*2;
+            availableY = g_canvas.height - this.respawnMinDist*2;
+            xRand = 100 + Math.floor(Math.random() * (g_canvas.width - 100));
+            yRand = 100 + Math.floor(Math.random() * (g_canvas.height - 100));
+            distCX = xRand + this.respawnMinDist;
+            distCY = yRand + this.respawnMinDist;
+
+            this.cx = util.randRange(distCX, distCX + availableX);
+            this.cy = util.randRange(distCY, distCY + availableY);
+     }
       this.wrapPosition();
     }
 

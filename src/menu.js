@@ -23,6 +23,20 @@ var enemylives = 3;
 var gameMusic = new Audio(
   "../sounds/gameMusic.mp3");
 
+var musicOn = false;
+
+g_canvas.addEventListener('click', function(event) {
+  if(!musicOn){
+    musicOn = true;
+    gameMusic.play();
+  }
+
+}, false);
+
+gameMusic.addEventListener('ended', function() {
+  this.play();
+}, false);
+
 // create a menu object that draws the screen
 var menu = {
 

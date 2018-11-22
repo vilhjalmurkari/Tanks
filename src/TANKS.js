@@ -286,7 +286,7 @@ function preloadDone() {
     g_sprites.tankstext = new Sprite(g_images.tankstext);
     g_sprites.fire = new Sprite(g_images.fire);
 
-    gameMusic.play();
+    //gameMusic.play();
 
     main.init();
 }
