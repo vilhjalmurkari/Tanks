@@ -11,8 +11,14 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-var g_brickwall = {
 //Easy to switch levels in generateWalls in entityManager
+//some developbent levels kept in, called wall...
+//levels used in game are called levels...
+//hard coded 20x20 array where number represents
+//what type of wall it, like an id
+
+var g_brickwall = {
+
     wall:[
         [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
@@ -187,19 +193,31 @@ function Wall(descr) {
     // Common inherited setup logic from Entity
     this.setup(descr);
 
-    this.sprite = [g_sprites.box1, g_sprites.box3, g_sprites.box2, g_sprites.box1, g_sprites.box4, g_sprites.barrel, g_sprites.turret];
+    //use id, i.e. life of wall as index in this array when rendering
+    this.sprite = [g_sprites.box1,
+                   g_sprites.box3,
+                   g_sprites.box2, 
+                   g_sprites.box1, 
+                   g_sprites.box4,
+                   g_sprites.barrel, 
+                   g_sprites.turret];
+
     this.type = "Wall";
     this.height = 30;
     this.width = 30;
     this.radius = this.height/2;
+    //rate of turretfire
     this.turretfire = 100;
-    this.currentHP = 40;
-    this.fullHP = 40;
+    //hp of turret
+    this.currentHP = 50;
+    this.fullHP = 50;
     this.rotation = 0;
+    //var to help turret shoot at sertain angles
     this.shoot1 = true;
     this.shoot2 = true;
     this.shoot3 = true;
     this.shoot4 = true;
+    //used in bullet so turrets dont take damage from other turrets
     if(this.life === 6){
         this.wallType = "turret";
     }
@@ -230,16 +248,16 @@ Wall.prototype.update = function (du) {
       return entityManager.KILL_ME_NOW;
     }
 
-    if (this.life > 1) {
-      spatialManager.register(this);
-    }
-
+    //kill if life gets to 0
     if(this.life == 0){
         this._isDeadNow = true;
     }
 
-    if(this.life === 6){
+    //if this is a turret, rotate it and shoot at Math.PI/2 interval
+    if(this.life === 6){ 
+        //update rotation
         this.rotation += Math.PI/100;
+        //some boolean gymnastics to get it to work
         if(this.rotation > Math.PI*2){
             this.fireTurret(4);
             this.rotation = 0;
@@ -261,14 +279,18 @@ Wall.prototype.update = function (du) {
         }
         this.turretfire--;
     }
+
+    if (this.life > 1) {
+        spatialManager.register(this);
+      }
 };
 
 Wall.prototype.takeBulletHit = function () {
+    //normal box cracks and loses a life
     if(this.life > 0 && this.life < 4){
         this.life--;
         this.woodBreaking.play();
         //last break of the box maybe gives a powerup
-
         if(this.life === 1){
             var rand = Math.random();
             if(rand > 0.3){
@@ -277,15 +299,18 @@ Wall.prototype.takeBulletHit = function () {
             }
         }
     }
+    //gazoline barrel that explodes and kills self
     else if(this.life === 5){
         entityManager.makeExplosion(
             this.cx + (this.width/2), this.cy + (this.height/2), 40);
         this.life = 0;
         this._isDeadNow = true;
     }
+    //unbreakable wall
     else if(this.life === 4){
         this.thump.play();
     }
+    //turret that has hp and then explodes
     else if(this.life === 6){
         this.thump.play();
         this.currentHP -= 10;
@@ -298,6 +323,7 @@ Wall.prototype.takeBulletHit = function () {
     }
 };
 
+//pretty much the same as takeBulletHit()
 Wall.prototype.takeExplosionHit = function () {
     if(this.life > 0 && this.life < 4){
         this.life--;
@@ -325,7 +351,8 @@ Wall.prototype.takeExplosionHit = function () {
 };
 
 
-
+//fire a bullet in a certain direction marked as "turretbullet"
+//this is done so other turrets dont take damage of that bullet
 Wall.prototype.fireTurret = function(direction) {
     var launchDist = 25;
     var xCenter = this.cx + this.width/2;
@@ -367,12 +394,14 @@ Wall.prototype.render = function (ctx) {
             ctx, this.cx, this.cy, this.width, this.height
             );
     }
-    if(this.life === 6){
+
+    //is turret and has a HP bar and has to rotate
+    else if(this.life === 6){
         
         this.sprite[this.life].drawCustomImgAt2(
             ctx, this.cx, this.cy, this.width, this.height, this.rotation
             );
-        //hp bar
+        //hp bar of turret
         var barHeight = 5;
         var barWidth = this.width;
         util.fillBox(ctx, this.cx , this.cy - (this.height/2) - 10,

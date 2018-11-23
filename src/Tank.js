@@ -11,6 +11,9 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+//Tank is pretty similar to enemyTank so I will refer to that file for some 
+//of the comments
+
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Tank(descr) {
@@ -40,6 +43,7 @@ Tank.prototype.rememberResets = function () {
 
 
 // Initial, inheritable, default values
+// This is very similar to enemyTank, not much to add
 Tank.prototype.rotation = 0;
 Tank.prototype.cx = 200;
 Tank.prototype.cy = 200;
@@ -64,28 +68,19 @@ Tank.prototype.wallPadding = 5;
 Tank.prototype.fireRate = 0;
 Tank.prototype.orginalFireSpeed = 20;
 Tank.prototype.fireSpeed = 20;
-// HACKED-IN AUDIO (no preloading)
 
 
 Tank.prototype.warp = function () {
 
     this._isWarping = true;
     this._scaleDirn = -1;
-    //this.warpSound.play();
-
     // Unregister me from my old posistion
     // ...so that I can't be collided with while warping
     spatialManager.unregister(this);
 };
 
+//this is the same as enemyTank but a bit simpler
 Tank.prototype.update = function (du) {
-
-    // Handle warping
-    /*
-    if (this._isWarping) {
-        this._updateWarp(du);
-        return;
-    }*/
 
     spatialManager.unregister(this);
     if (this._isDeadNow) {
