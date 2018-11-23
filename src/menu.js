@@ -145,7 +145,7 @@ function drawHTPScreen(ctx, btnGBY) {
   ctx.fillText("If two player mode is selecter, the objective is to kill",60,270);
   ctx.fillText("the other player.To make it more fun, we added a ", 70, 300);
   ctx.fillText("single enemy AI tank to have it more difficult.", 75, 330);
-  ctx.fillText("Player 1 uses the Arrow keys to move and spacebar to shoot.",60,390);
+  ctx.fillText("Player 1 uses Arrow keys to move and spacebar to shoot.",60,390);
   ctx.fillText("Player 2 uses WDSA keys to move and the 1 key to shoot.",60,420);
 
   drawGBbutton(ctx, btnGBY);

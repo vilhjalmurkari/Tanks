@@ -12,7 +12,7 @@
 */
 
 //Tank is pretty similar to enemyTank so I will refer to that file for some 
-//of the comments
+//of the comments. Enemy tank is fairly detailed commented
 
 
 // A generic contructor which accepts an arbitrary descriptor object
@@ -108,7 +108,7 @@ Tank.prototype.update = function (du) {
     spatialManager.register(this);
 };
 
-
+//same as enemyTank
 Tank.prototype.handlePowerup = function (hitPowerup) {
     hitPowerup._isDeadNow = true;
     if(hitPowerup.powerupType === 0){
@@ -143,9 +143,9 @@ Tank.prototype.handleSpeedPowerup = function () {
     }
 };
 
+//this powerup gives player an extra life
 Tank.prototype.handleReaperPowerup = function () {
     this.lives++;
-    // this.currentHP = 100;
 };
 
 Tank.prototype.handleFirepowerPowerup = function () {
@@ -180,6 +180,7 @@ Tank.prototype.computeSubStep = function (du) {
     }
 };
 
+//move if no obsticle and button is pressed
 Tank.prototype.moveTank = function (du) {
 
     if (keys[this.KEY_FORWARD]) {
@@ -227,6 +228,7 @@ Tank.prototype.moveTank = function (du) {
 
 };
 
+//same as enemyTank
 Tank.prototype.canMove = function (x, y, rad) {
     var wrapCheck = this.checkCollisionWrapping(x, y, rad);
     return !wrapCheck;
@@ -310,6 +312,7 @@ Tank.prototype.getRadius = function () {
     return (this.width / 2) * 0.9;
 };
 
+//same as enemyTank but respawns normally
 Tank.prototype.takeBulletHit = function () {
     if(this.shield > 0){
 
@@ -336,6 +339,7 @@ Tank.prototype.takeBulletHit = function () {
 
 };
 
+//pretty much same as take takeBulletHit()
 Tank.prototype.takeExplosionHit = function () {
     if(this.shield > 0){
 
@@ -379,6 +383,16 @@ Tank.prototype.respawn = function () {
     while (!this.canMove(this.cx, this.cy, this.radius)) {
       this.cx += 30;
       this.cy +=30;
+      //if outside of canvas get inside
+      if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy > 600){
+            availableX = g_canvas.width - this.respawnMinDist*2;
+            availableY = g_canvas.height - this.respawnMinDist*2;
+            distCX = this.cx + this.respawnMinDist;
+            distCY = this.cy + this.respawnMinDist;
+
+            this.cx = util.randRange(distCX, distCX + availableX);
+            this.cy = util.randRange(distCY, distCY + availableY);
+     }
       this.wrapPosition();
     }
 
@@ -444,7 +458,7 @@ Tank.prototype.render = function (ctx) {
         }
     }
 
-    //fireRate bar
+    //fireRate bar, reloading gun
     var barHeight = 5;
     var barWidth = this.width;
     util.fillBox(ctx, this.cx - this.width/2, this.cy - (this.height/2) - 20,

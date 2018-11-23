@@ -20,10 +20,6 @@ function EnemyTank(descr) {
 
     this.rememberResets();
 
-    //if we want it at a random location
-    if(this.randomLoc){
-        this.spawn();
-    }
     // Default sprite, if not otherwise specified
     this.sprite = this.sprite || g_sprites.tank3;
 
@@ -95,6 +91,12 @@ EnemyTank.prototype.warp = function () {
 EnemyTank.prototype.update = function (du) {
 
     spatialManager.unregister(this);
+
+    //if we want it at a random location
+    if(this.randomLoc){
+        this.randomLoc = false;
+        this.spawn();
+    }
     if (this._isDeadNow) {
       return entityManager.KILL_ME_NOW;
     }
@@ -102,6 +104,7 @@ EnemyTank.prototype.update = function (du) {
     if(this.shield > 0){
         this.shield -= du;
     }
+
     // Perform movement substeps
     var steps = this.numSubSteps;
     var dStep = du / steps;
@@ -195,6 +198,7 @@ EnemyTank.prototype.moveTank = function (du) {
     var nearestTankDist = this.findNearestTankdist();
     //if tank is not correcting its angle and not to close to target tank it moves
     if (!this.angleCorrection && nearestTankDist > 50) {
+        
         var deltaX = +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
         var deltaY = -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
 
@@ -203,7 +207,7 @@ EnemyTank.prototype.moveTank = function (du) {
             this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
         }
-        //if stuck in wall then move a bit back
+        //if stuck on wall then move a bit back
         else if(this.moveFromWall > - 10 && this.moveFromWall < 10 && this.moveFromWall !== 0){
             var deltaX = +Math.sin(this.rotation) * -this.stepsize * this.extraSpeed;
             var deltaY = -Math.cos(this.rotation) * -this.stepsize * this.extraSpeed;
@@ -440,11 +444,11 @@ EnemyTank.prototype.respawn = function () {
     this.wrapPosition();
 
     //Adjust new position if the EnemyTank lands on a box
-    while (!this.canMove(this.cx, this.cy, this.radius)) {
+    while (!this.canMove(this.cx, this.cy, this.getRadius())) {
         this.cx += 30;
         this.cy +=30;
         //if outside of canvas get inside
-        if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy >600){
+        if(this.cx < 0 || this.cx > 600 || this.cy < 0 || this.cy > 600){
             //Available space on the x-axis
             var availableX = g_canvas.width - this.respawnMinDist*2;
             //Available space on the y-axis
@@ -475,7 +479,7 @@ EnemyTank.prototype.spawn = function () {
     this.wrapPosition();
 
     //Adjust new position if the EnemyTank lands on a box
-    while (!this.canMove(this.cx, this.cy, this.radius)) {
+    while (!this.canMove(this.cx, this.cy, this.getRadius())) {
       this.cx += 30;
       this.cy +=30;
       //if outside of canvas get inside
