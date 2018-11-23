@@ -95,7 +95,6 @@ function createInitialTanks(twoPlayer) {
             randomLoc: false,
         });
     }
-
 }
 
 // =============
