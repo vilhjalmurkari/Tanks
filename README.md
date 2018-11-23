@@ -1,8 +1,8 @@
 # B3: Tanks
 
-Karl Ágúst Bárðarson kab46@hi.is
-Stefán Gunnlaugur Jónsson sgj10@hi.is
-Vilhjálmur Kári Jensson vkj3@hi.is
+#### Karl Ágúst Bárðarson kab46@hi.is
+#### Stefán Gunnlaugur Jónsson sgj10@hi.is
+#### Vilhjálmur Kári Jensson vkj3@hi.is
 
 ## Tank game
 Our game idea is to make 2d tanks game. You see the gameboard from an areal view. The
@@ -24,8 +24,8 @@ Make the AI for playing agains the computer. Make different types of levels. Fin
 product.
 
 ### Powerups
-*Speed
-*Bomb
-*Shield
-*Extra life 
-*Faster shooting
+* Speed
+* Bomb
+* Shield
+* Extra life 
+* Faster shooting
