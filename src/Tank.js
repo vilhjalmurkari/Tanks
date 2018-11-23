@@ -201,12 +201,12 @@ Tank.prototype.moveTank = function (du) {
             //left and right
             var newtest = this.canMove(this.cx + deltaX, this.cy, this.getRadius());
             if(!newtest){
-                this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed*0.5;
+                this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed*0.3;
             }
             //left right
             newtest = this.canMove(this.cx, this.cy + deltaY, this.getRadius());
             if(!newtest){
-                this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed*0.5;
+                this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed*0.3;
             }
         }
     }
@@ -222,11 +222,11 @@ Tank.prototype.moveTank = function (du) {
         } else {
             var newtest = this.canMove(this.cx + deltaX, this.cy, this.getRadius());
             if(!newtest){
-                this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed*0.5;
+                this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed*0.3;
             }
             newtest = this.canMove(this.cx, this.cy + deltaY, this.getRadius());
             if(!newtest){
-                this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed*0.5;
+                this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed*0.3;
             }
         }
     }
