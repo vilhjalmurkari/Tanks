@@ -64,7 +64,7 @@ Tank.prototype.shootingBumper = 0;
 Tank.prototype.bombs = 0;
 Tank.prototype.shield = 0;
 Tank.prototype.shieldLifespan = 10000 / NOMINAL_UPDATE_INTERVAL;
-Tank.prototype.wallPadding = 5;
+Tank.prototype.wallPadding = 0;
 Tank.prototype.fireRate = 0;
 Tank.prototype.orginalFireSpeed = 20;
 Tank.prototype.fireSpeed = 20;
@@ -181,6 +181,7 @@ Tank.prototype.computeSubStep = function (du) {
 };
 
 //move if no obsticle and button is pressed
+//slide with walls
 Tank.prototype.moveTank = function (du) {
 
     if (keys[this.KEY_FORWARD]) {
@@ -189,19 +190,24 @@ Tank.prototype.moveTank = function (du) {
 
         var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
 
-        if(test){
+        //if not colliding with wall update pos
+        if(!test){
             this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
-        } else {
-          /*
-            var whereOnBox = spatialManager.checkWhereOnBox(this.cx + deltaX, this.cy + deltaY, this.getRadius(), test);
-            if (whereOnBox === -1) {
-              this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed;
+        }
+        //if colliding with wall check if able to move up and down only 
+        //or left and right only and then update only that pos
+        else {
+            //left and right
+            var newtest = this.canMove(this.cx + deltaX, this.cy, this.getRadius());
+            if(!newtest){
+                this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed*0.5;
             }
-            if (whereOnBox === 1) {
-              this.cx += +Math.sin(this.rotation) * this.stepsize * du * this.extraSpeed;
+            //left right
+            newtest = this.canMove(this.cx, this.cy + deltaY, this.getRadius());
+            if(!newtest){
+                this.cy += -Math.cos(this.rotation) * this.stepsize * du * this.extraSpeed*0.5;
             }
-            */
         }
     }
     if (keys[this.KEY_BACKWARDS]) {
@@ -210,19 +216,18 @@ Tank.prototype.moveTank = function (du) {
 
         var test = this.canMove(this.cx + deltaX, this.cy + deltaY, this.getRadius());
 
-        if(test){
+        if(!test){
             this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
             this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
         } else {
-          /*
-          var whereOnBox = spatialManager.checkWhereOnBox(this.cx + deltaX, this.cy + deltaY, this.getRadius(), test);
-          if (whereOnBox === -1) {
-            this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed;
-          }
-          if (whereOnBox === 1) {
-            this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed;
-          }
-          */
+            var newtest = this.canMove(this.cx + deltaX, this.cy, this.getRadius());
+            if(!newtest){
+                this.cx += +Math.sin(this.rotation) * -this.stepsize * du * this.extraSpeed*0.5;
+            }
+            newtest = this.canMove(this.cx, this.cy + deltaY, this.getRadius());
+            if(!newtest){
+                this.cy += -Math.cos(this.rotation) * -this.stepsize * du * this.extraSpeed*0.5;
+            }
         }
     }
 
@@ -231,7 +236,7 @@ Tank.prototype.moveTank = function (du) {
 //same as enemyTank
 Tank.prototype.canMove = function (x, y, rad) {
     var wrapCheck = this.checkCollisionWrapping(x, y, rad);
-    return !wrapCheck;
+    return wrapCheck;
 };
 
 Tank.prototype.checkCollisionWrapping = function (x, y, rad) {
@@ -249,19 +254,19 @@ Tank.prototype.checkCollisionWrappingVertical = function (x, y, rad) {
     //if no collision then everything retuns false
     //if one function retuns an entity this will return said entity
     var boxCheckMiddle = spatialManager.checkBoxCollision(
-        x, y, this.getRadius() - this.wallPadding
+        x, y, this.getRadius()
     );
     var tankCheckMiddle = spatialManager.checkTankVTankCollision(
         x, y, this.getRadius()
     );
     var boxCheckTop = spatialManager.checkBoxCollision(
-        x, y + sh, this.getRadius() - this.wallPadding
+        x, y + sh, this.getRadius()
     );
     var tankCheckTop = spatialManager.checkTankVTankCollision(
         x, y + sh, this.getRadius()
     );
     var boxCheckBottom = spatialManager.checkBoxCollision(
-        x, y - sh, this.getRadius() - this.wallPadding
+        x, y - sh, this.getRadius()
     );
     var tankCheckBottom = spatialManager.checkTankVTankCollision(
         x, y - sh, this.getRadius()
@@ -380,7 +385,7 @@ Tank.prototype.respawn = function () {
     this.wrapPosition();
 
     //Adjust new position if the tank lands on a box
-    while (!this.canMove(this.cx, this.cy, this.radius)) {
+    while (this.canMove(this.cx, this.cy, this.radius)) {
       this.cx += 30;
       this.cy +=30;
       //if outside of canvas get inside

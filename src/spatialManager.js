@@ -373,13 +373,16 @@ checkWhereOnBox: function(x, y, r, entity) {
 
       //This box and the circle have collided
       var whereOnBox = 0;
+      if (( x < cX || x  > cX) && ( y < cY || y > cY)) {
+        whereOnBox = 2;
+      }
 
-      if ( x < cX || x  > cX) {
+      else if ( x < cX || x  > cX) {
         console.log("left/right collision");
         whereOnBox = -1;
       }
 
-      if ( y < cY || y > cY) {
+      else if ( y < cY || y > cY) {
         console.log("top/bottom collision");
         whereOnBox = 1;
       }
